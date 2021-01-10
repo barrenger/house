@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{% endblock %}
+
+{% block main %}
+    Hello World
+    {% for house in houses %}
+        {{house.address}}
+    {% endfor %}
+{% endblock %}
+
