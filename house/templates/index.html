@@ -1,12 +1,37 @@
 {% extends 'base.html' %}
 
 {% block head %}
+<!-- Create a new Entry -->
+<form class="mt-1 mb-1 ml-3 mr-3" action="{{ url_for('main.details', houseId=0) }}">
+    <table width=100%>
+        <tr>
+            <td colspan=3></td><h3>New Entry</h3></td>
+        </tr>
+        <tr>
+            <td><label>Address: </label></td>
+            <td colspan=2><input class="mb-2" style="width:100%; max-width:500px;" type="text" id="address" name="address" required></td>
+        </tr>
+        <tr>
+            <td width=100px><label class="">Suburb: </label></td>
+            <td width=100px><input type="text" id="suburb" name="suburb" required></td>
+            <td><input id="new-entry" class="btn button-color pt-1 pb-1" type="submit" value="Create"></td>
+        </tr>
+    </table>
+</form>
+<div style="border-bottom: 1px solid black;" class="m-3"></div>
 {% endblock %}
 
 {% block main %}
-    Hello World
-    {% for house in houses %}
-        {{house.address}}
-    {% endfor %}
+<div class="container-fluid" style="margin-top:36px;">
+{% for house in houses %}
+    <a href="{{ url_for('main.details', houseId=house.id) }}">
+        <article class="card">
+            <div class="card-body">
+                {{house.address}}, {{house.suburb}}
+            </div>
+        </article>
+    </a>
+{% endfor %}
+</div>
 {% endblock %}
 

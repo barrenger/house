@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+
+
+
+<form>
+{% block head %}
+<input id="new-entry" class="btn button-color pt-1 pb-1" type="submit" value="Update">
+{% endblock %}
+
+{% block main %}
+<div class="container-fluid" style="margin-top:36px;">
+    <article class="card">
+        <div class="card-body">
+            <h5 class="card-title">House Overview</h5>
+            <table width=100%>
+                <tr><td width="200px">Address: </td><td><input class="mb-2" style="width:100%; max-width:500px;" type="text" id="address" name="address" value="{{house.address}}"></td></tr>
+                <tr><td>Suburb: </td><td><input class="mb-2" type="text" id="suburb" name="suburb" value="{{house.suburb}}"></td></tr>
+                <tr><td>Date on Market: </td><td><input type="date" id="date_market" value="{{house.date_market}}"></td></tr>
+                <tr><td>Asking Price: </td><td><input type="number" id="price_ask" value="{{house.price_ask}}"></td></tr>
+                <tr><td>Sale Date: </td><td><input type="date" id="date_sale" value="{{house.date_sale}}"></td></tr>
+                <tr><td>Final Sale Price: </td><td><input type="number" id="price_sale" value="{{house.price_sale}}"></td></tr>
+                <tr><td>Additional Notes: </td><td><textarea class="mb-2" rows=5 style="width:100%; max-width:500px;" type="text" id="notes" name="notes" value="{{house.notes}}"></textarea></td></tr>
+            </table>
+        </div>
+    </article>
+    <article class="card">
+        <div class="card-body">
+            <h5 class="card-title">House Details</h5>
+            <table>
+                <tr><td width="200px">Land Size (m2): </td><td><input type="number" id="land_size" value="{{house.land_size}}"></td></tr>
+                <tr><td>House Size (m2): </td><td><input type="number" id="house_size" value="{{house.house_size}}"></td></tr>
+                <tr><td>Construction Material: </td><td><select id="construction_mat" value="{{house.construction_mat}}">
+                    <option value=0>Select from...</option>
+                    <option value=1>Wood</option>
+                    <option value=2>Brick</option>
+                    <option value=3>Other</option>
+                </select></td></tr>
+                <tr><td>Street Type: </td><td><select id="street_type" value="{{house.street_type}}">
+                    <option value=0>Select from...</option>
+                    <option value=1>Main Road</option>
+                    <option value=2>Busy Road</option>
+                    <option value=3>Quiet Road</option>
+                    <option value=4>Dead End</option>
+                </select></td></tr>
+                <tr><td>Roof Material: </td><td><select id="roof_mat" value="{{house.roof_mat}}">
+                    <option value=0>Select from...</option>
+                    <option value=1>Corrugated Iron</option>
+                    <option value=2>Tile</option>
+                    <option value=3>Other</option>
+                </select></td></tr>
+                <tr><td>Roof Condition: </td><td><select id="roof_cond" value="{{house.roof_cond}}">
+                    <option value=0>Select from...</option>
+                    <option value=1>Poor</option>
+                    <option value=2>Good</option>
+                </select></td></tr>
+                <tr><td>Insulation: </td><td><select id="construction_mat" value="{{house.construction_mat}}">
+                    <option value=-1>Select Yes or No...</option>
+                    <option value=0>No</option>
+                    <option value=1>Yes</option>
+                </select></td></tr>
+                <tr><td>Driveway Condition: </td><td><select id="driveway_cond" value="{{house.driveway_cond}}">
+                    <option value=0>Select from...</option>
+                    <option value=1>Poor</option>
+                    <option value=2>Good</option>
+                </select></td></tr>
+                <tr><td>Fenced Yard: </td><td><select id="fenced" value="{{house.fenced}}">
+                    <option value=0>Select from...</option>
+                    <option value=1>None/Incomplete</option>
+                    <option value=2>Back Only</option>
+                    <option value=3>Fully Fenced</option>
+                </select></td></tr>
+                <tr><td>Fenced Condition: </td><td><select id="fence_cond" value="{{house.fence_cond}}">
+                    <option value=0>Select from...</option>
+                    <option value=1>No Fence</option>
+                    <option value=2>Poor</option>
+                    <option value=3>Mixed</option>
+                    <option value=4>Good</option>
+                </select></td></tr>
+                <tr><td>Backyard Size: </td><td><select id="backyard_size" value="{{house.backyard_size}}">
+                    <option value=0>Select from...</option>
+                    <option value=1>None</option>
+                    <option value=2>Small</option>
+                    <option value=3>Medium</option>
+                    <option value=4>Large</option>
+                </select></td></tr>
+                <tr><td>Is the yard level? </td><td><select id="yard_level" value="{{house.yard_level}}">
+                    <option value=0>Select from...</option>
+                    <option value=1>No Yard</option>
+                    <option value=2>Unlevel</option>
+                    <option value=3>Partially Level</option>
+                    <option value=4>Level</option>
+                </select></td></tr>
+                <tr><td>Landscaping: </td><td><select id="landcaping_cond" value="{{house.landcaping_cond}}">
+                    <option value=0>Select from...</option>
+                    <option value=1>Poor</option>
+                    <option value=2>Good, high maintenance</option>
+                    <option value=3>Good, low maintenance</option>
+                </select></td></tr>
+                <tr><td>Pool: </td><td><select id="pool" value="{{house.pool}}">
+                    <option value=0>Select from...</option>
+                    <option value=1>None</option>
+                    <option value=2>Old</option>
+                    <option value=3>New</option>
+                </select></td></tr>
+                <tr><td>Pool Type (Chlorine/Salt): </td><td><select id="pool_type" value="{{house.pool_type}}">
+                    <option value=0>Select from...</option>
+                    <option value=1>Chlorine</option>
+                    <option value=2>Salt</option>
+                    <option value=3>Bromine</option>
+                </select></td></tr>
+                <tr><td>Pool Construction (Inground/Above Ground): </td><td><select id="pool_construction" value="{{house.pool_construction}}">
+                    <option value=0>Select from...</option>
+                    <option value=1>Inground</option>
+                    <option value=2>Above Ground</option>
+                    <option value=3>Above Ground (in the ground)</option>
+                </select></td></tr>
+                <tr><td>Pool Filter: </td><td><select id="pool_filter" value="{{house.pool_filter}}">
+                    <option value=0>Select from...</option>
+                    <option value=1>Cartridge</option>
+                    <option value=2>Brick</option>
+                    <option value=3>Other</option>
+                </select></td></tr>
+                <tr><td>Pool Cleaner: </td><td><select id="pool_cleaner" value="{{house.pool_cleaner}}">
+                    <option value=0>Select from...</option>
+                    <option value=1>None</option>
+                    <option value=2>Creepy Crawly</option>
+                    <option value=3>Robot</option>
+                </select></td></tr>
+            </table>
+        </div>
+    </article>
+    <article class="card">
+        <div class="card-body">
+            <h5 class="card-title">House Condition</h5>
+            <table>
+                <tr><td width="200px">Underhouse Access: </td><td><select id="underhouse_access" value="{{house.underhouse_access}}">
+                    <option value=-1>Select Yes or No...</option>
+                    <option value=0>No</option>
+                    <option value=1>Yes</option>
+                </select></td></tr>
+                <tr><td>Council Approval (for extensions or renovations): </td><td><select id="council_approval" value="{{house.council_approval}}">
+                    <option value=-1>Select Yes or No...</option>
+                    <option value=0>No</option>
+                    <option value=1>Yes</option>
+                </select></td></tr>
+                <tr><td>Large cracks in building: </td><td><select id="cracks" value="{{house.cracks}}">
+                    <option value=0>Select from...</option>
+                    <option value=1>None</option>
+                    <option value=2>Single</option>
+                    <option value=3>Multiple</option>
+                </select></td></tr>
+                <tr><td>Are Roof Lines Straight? </td><td><select id="roof_lines" value="{{house.roof_lines}}">
+                    <option value=-1>Select Yes or No...</option>
+                    <option value=0>No</option>
+                    <option value=1>Yes</option>
+                </select></td></tr>
+                <tr><td>Gutters' Condition: </td><td><select id="gutters_cond" value="{{house.gutters_cond}}">
+                    <option value=0>Select from...</option>
+                    <option value=1>Rusty</option>
+                    <option value=2>Blocked</option>
+                    <option value=3>Good</option>
+                </select></td></tr>
+                <tr><td>Downpipes: </td><td><select id="downpipes" value="{{house.downpipes}}">
+                    <option value=0>Select from...</option>
+                    <option value=1>Evidence of flooding at base</option>
+                    <option value=2>Drains to ground</option>
+                    <option value=3>Drains to soak well</option>
+                </select></td></tr>
+                <tr><td>Trees near the house: </td><td><select id="trees" value="{{house.trees}}">
+                    <option value=0>Select from...</option>
+                    <option value=1>None</option>
+                    <option value=2>Small</option>
+                    <option value=3>Large</option>
+                </select></td></tr>
+                <tr><td>Outside Electrics' Condition: </td><td><select id="outside_elec_cond" value="{{house.outside_elec_cond}}">
+                    <option value=0>Select from...</option>
+                    <option value=1>None</option>
+                    <option value=2>Loose or broken power points or cables</option>
+                    <option value=3>Good</option>
+                </select></td></tr>
+                <tr><td>Flood Zone: </td><td><select id="flood_zone" value="{{house.flood_zone}}">
+                    <option value=-1>Select Yes or No...</option>
+                    <option value=0>No</option>
+                    <option value=1>Yes</option>
+                </select></td></tr>
+                <tr><td>Sewage: </td><td><select id="sewage" value="{{house.sewage}}">
+                    <option value=0>Select from...</option>
+                    <option value=1>Separate</option>
+                    <option value=2>Connets to combine drain</option>
+                    <option value=3>Is combine drain</option>
+                </select></td></tr>
+            </table>
+        </div>
+    </article>
+</div>
+{% endblock %}
+</form>

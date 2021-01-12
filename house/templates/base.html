@@ -4,8 +4,8 @@
 <head>
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>House</title>
-    <meta name="description" content="House">
+    <title>House Evaluation</title>
+    <meta name="description" content="House Evaluation">
 
     <!-- Stylesheets -->
     <link
@@ -19,6 +19,27 @@
 <body class="d-flex flex-column h-100">
 
     <header>
+        <nav class="navbar navbar-expand-md navbar-light">
+            <!-- Company Name -->
+            <a href="{{ url_for('main.index')}}" class="navbar-brand text-light">
+                House Evaluation
+            </a>
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler"
+                aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button> 
+
+            <!-- Navbar -->
+            <div class="collapse navbar-collapse" id="navbarToggler">
+                <div class="navbar-nav ml-auto">
+                    <a class="nav-item text-light nav-link" href="{{ url_for('main.index')}}">Home</a>
+                    <a class="nav-item text-light nav-link" href="{{ url_for('main.index')}}">Add New</a>
+                    <a class="nav-item text-light nav-link" href="{{ url_for('main.index')}}">Analysis</a>
+                </div>
+            </div>
+        </nav>
+
         {% block head %}{% endblock %}
     </header>
 

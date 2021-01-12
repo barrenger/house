@@ -4,6 +4,7 @@ class House(db.Model):
     __tablename__='houses'
     id = db.Column(db.Integer, primary_key=True)
     address = db.Column(db.String(500), unique=True)
+    suburb = db.Column(db.String(64),nullable=False)
     # Final Sale Price
     price_ask = db.Column(db.Float, nullable=True)
     # Final Sale Price
@@ -11,7 +12,8 @@ class House(db.Model):
     # Date Placed on Market
     date_market = db.Column(db.DateTime, nullable=True)
     # Date Sold
-    date = db.Column(db.DateTime, nullable=True)
+    date_sale = db.Column(db.DateTime, nullable=True)
+    
     # Construction Material: 1 = wood, 2 = brick, 3 = other.
     construction_mat = db.Column(db.Integer, nullable=True) 
     # Land Size: square meters.
@@ -20,7 +22,7 @@ class House(db.Model):
     house_size = db.Column(db.Integer, nullable=True)
     # Street Type: 1 = main road, 2 = busy road, 3 = quiet road, 4 = dead end.
     street_type = db.Column(db.Integer, nullable=True)
-    # Roof Material: 1 = corrogated iron, 2 = tile.
+    # Roof Material: 1 = corrugated iron, 2 = tile, 3 = other.
     roof_mat = db.Column(db.Integer, nullable=True)
     # Roof Condition: 1 = poor, 2 = good.
     roof_cond = db.Column(db.Integer, nullable=True)
@@ -40,10 +42,15 @@ class House(db.Model):
     landcaping_cond = db.Column(db.Integer, nullable=True)
     # Pool: 1 = none, 2 = old, 3 = new.
     pool = db.Column(db.Integer, nullable=True)
+    # Pool Type: 1 = chlorine, 2 = salt, 3 = bromine.
+    pool_type = db.Column(db.Integer, nullable=True)
+    # Pool Construction: 1 = Inground, 2 = Above Ground, 3 = above ground, in the ground.
+    pool_construction = db.Column(db.Integer, nullable=True)
     # Pool Filter: 1 = cartridge, 2 = sand, 3 = glass.
     pool_filter = db.Column(db.Integer, nullable=True)
     # Pool Cleaner: 1 = none, 2 = creepy crawly, 3 = robot.
     pool_cleaner = db.Column(db.Integer, nullable=True)
+
     # Plumbing and Electrical accessible under house: Boolean.
     underhouse_access = db.Column(db.Boolean, nullable=True)
     # Renovations and Extensions have council approval: Boolean.
