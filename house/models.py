@@ -87,7 +87,6 @@ class House(db.Model):
 class Room(db.Model):
     __tablename__='rooms'
     id = db.Column(db.Integer, primary_key=True)
-    house_id = db.Column(db.Integer, db.ForeignKey('houses.id'))
     # Size: 1 = small, 2 = medium, 3 = large.
     size = db.Column(db.Integer, nullable=True) 
     # Floor Material: 1 = wood, 2 = tile, 3 = carpet, 4 = lino, 5 = concrete, 6 = other.
@@ -126,10 +125,13 @@ class Room(db.Model):
         str =str.format( self.id)
         return str
 
+
 class Bedroom(db.Model):
     __tablename__='bedrooms'
     id = db.Column(db.Integer, primary_key=True)
+    house_id = db.Column(db.Integer, db.ForeignKey('houses.id'))
     room_id = db.Column(db.Integer, db.ForeignKey('rooms.id'))
+    room = db.relationship("Room")
     # Ceiling Fan: 1 = none, 2 = old, 3 = new.
     fan = db.Column(db.Integer, nullable=True) 
     # Air Conditioning: 1 = none, 2 = old, 3 = new.
@@ -141,16 +143,18 @@ class Bedroom(db.Model):
     # Walk-in Wardrobe: 1 = none, 2 = none but space to build one, 3 = small, 4 = large.
     walk_in = db.Column(db.Integer, nullable=True) 
 
-
     def __repr__(self):
         str = "Id: {}\n" 
         str =str.format( self.id)
         return str
 
+
 class Kitchen(db.Model):
     __tablename__='kitchens'
     id = db.Column(db.Integer, primary_key=True)
+    house_id = db.Column(db.Integer, db.ForeignKey('houses.id'))
     room_id = db.Column(db.Integer, db.ForeignKey('rooms.id'))
+    room = db.relationship("Room")
     # Ceiling Fan: 1 = none, 2 = old, 3 = new.
     fan = db.Column(db.Integer, nullable=True) 
     # Air Conditioning: 1 = none, 2 = old, 3 = new.
@@ -176,16 +180,18 @@ class Kitchen(db.Model):
     # Hot Water Lag: seconds.
     hot_water_lag = db.Column(db.Integer, nullable=True) 
 
-
     def __repr__(self):
         str = "Id: {}\n" 
         str =str.format( self.id)
         return str
 
+
 class Living(db.Model):
     __tablename__='living_rooms'
     id = db.Column(db.Integer, primary_key=True)
+    house_id = db.Column(db.Integer, db.ForeignKey('houses.id'))
     room_id = db.Column(db.Integer, db.ForeignKey('rooms.id'))
+    room = db.relationship("Room")
     # Ceiling Fan: 1 = none, 2 = old, 3 = new.
     fan = db.Column(db.Integer, nullable=True) 
     # Air Conditioning: 1 = none, 2 = old, 3 = new.
@@ -197,16 +203,18 @@ class Living(db.Model):
     # Ariel Location: 1 = not practical, 2 = practical.
     ariel = db.Column(db.Integer, nullable=True) 
 
-
     def __repr__(self):
         str = "Id: {}\n" 
         str =str.format( self.id)
         return str
 
+
 class Bath(db.Model):
     __tablename__='bathrooms'
     id = db.Column(db.Integer, primary_key=True)
+    house_id = db.Column(db.Integer, db.ForeignKey('houses.id'))
     room_id = db.Column(db.Integer, db.ForeignKey('rooms.id'))
+    room = db.relationship("Room")
     # Toilet Condition: 1 = none, 2 = poor, 3 = good.
     toilet_cond = db.Column(db.Integer, nullable=True) 
     # Shower Condition: 1 = none, 2 = poor, 3 = average, 4 = good.
@@ -224,11 +232,11 @@ class Bath(db.Model):
     # Extraction Fan: 1 = none, 2 = noisy, 3 = good
     extraction_fan = db.Column(db.Integer, nullable=True) 
 
-
     def __repr__(self):
         str = "Id: {}\n" 
         str =str.format( self.id)
         return str
+
 
 class Garage(db.Model):
     __tablename__='garages'
@@ -242,7 +250,6 @@ class Garage(db.Model):
     garage_cond = db.Column(db.Integer, nullable=True)
     # Garage Door: 1 = none, 2 = manual, 3 = auto.
     door = db.Column(db.Integer, nullable=True) 
-
 
     def __repr__(self):
         str = "Id: {}\n" 

@@ -29,47 +29,10 @@ def details(houseId):
     elif houseId:
         house = House.query.get(houseId)
         
-    rooms = []
-    roomOverviews = Room.query.filter(Room.house_id == houseId).all()
-    for overview in roomOverviews:
-        bedroom = Bedroom.query.filter(Bedroom.room_id == overview.id).all()
-        kitchen = Kitchen.query.filter(Bedroom.room_id == overview.id).all()
-        living = Living.query.filter(Bedroom.room_id == overview.id).all()
-        bath = Bath.query.filter(Bedroom.room_id == overview.id).all()
-        garage = Garage.query.filter(Bedroom.room_id == overview.id).all()
-        
-        myType = ""
-        room = None
+    bedrooms = Bedroom.query.filter(Bedroom.house_id == houseId).all()
+    kitchens = Bedroom.query.filter(Kitchen.house_id == houseId)
+    livingrooms = Bedroom.query.filter(Living.house_id == houseId)
+    bathrooms = Bedroom.query.filter(Bath.house_id == houseId)
+    garages = Bedroom.query.filter(Garage.house_id == houseId)
 
-        if len(bedroom) == 1:
-            myType = "bedroom"
-            room = bedroom[0]
-        if len(kitchen) == 1:
-            myType = "kitchen"
-            room = kitchen[0]
-        if len(living) == 1:
-            myType = "living"
-            room = living[0]
-        if len(bath) == 1:
-            myType = "bath"
-            room = bath[0]
-        if len(garage) == 1:
-            myType = "garage"
-            room = garage[0]
-
-        if myType != "":
-            roomComplete = RoomComplete(overview,myType,room)
-            rooms.append(roomComplete)
-
-    return render_template('details.html', house=house, rooms=rooms)
-
-class RoomComplete:
-    def __init__(self, overview, roomType, room):
-        self.overview = overview
-        self.roomType = roomType
-        self.room = room
-
-    def __repr__(self):
-        str = "Room Id: {}, Type: {}\n" 
-        str =str.format( self.overview.id, self.roomType)
-        return str
+    return render_template('details.html', house=house, bedroom_qty=len(bedrooms), bedrooms=bedrooms)
