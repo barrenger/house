@@ -2,196 +2,1568 @@
 
 
 
-<form>
+
 {% block head %}
-<input id="new-entry" class="btn button-color pt-1 pb-1" type="submit" value="Update">
+<form method="POST" id="updateForm" name="updateForm" action="{{ url_for('main.details', houseId=house.id) }}">
+<!-- Identify that we're updating a record-->
+<input type="hidden" id="update" name="update" value="true">
+
+<!-- Identify new rooms-->
+<input type="hidden" name="newBedrooms" id="newBedrooms" value=0>
+<input type="hidden" name="newKitchens" id="newKitchens" value=0>
+<input type="hidden" name="newLivingrooms" id="newLivingrooms" value=0>
+<input type="hidden" name="newBathrooms" id="newBathrooms" value=0>
+<input type="hidden" name="newGarages" id="newGarages" value=0>
+
+<!-- Identify removed rooms-->
+<input type="hidden" name="removeBedrooms" id="removeBedrooms" value=''>
+<input type="hidden" name="removeKitchens" id="removeKitchens" value=''>
+<input type="hidden" name="removeLivingrooms" id="removeLivingrooms" value=''>
+<input type="hidden" name="removeBathrooms" id="removeBathrooms" value=''>
+<input type="hidden" name="removeGarages" id="removeGarages" value=''>
+
+<!-- Submit button-->
+<input class="btn button-color pt-1 pb-1 mt-3 mr-4" style="float:right;" type="submit" value="Update">
+<p class="pt-1 pb-1 mt-3 mr-4" style="width:95%; height: 4em; border-bottom:2px solid grey; margin-left:2.5%; margin-right: 2.5%"></p>
 {% endblock %}
 
 {% block main %}
-<div class="container-fluid" style="margin-top:36px;">
-    <article class="card">
-        <div class="card-body">
-            <h5 class="card-title">House Overview</h5>
-            <table width=100%>
-                <tr><td width="200px">Address: </td><td><input class="mb-2" style="width:100%; max-width:500px;" type="text" id="address" name="address" value="{{house.address}}"></td></tr>
-                <tr><td>Suburb: </td><td><input class="mb-2" type="text" id="suburb" name="suburb" value="{{house.suburb}}"></td></tr>
-                <tr><td>Date on Market: </td><td><input type="date" id="date_market" value="{{house.date_market}}"></td></tr>
-                <tr><td>Asking Price: </td><td><input type="number" id="price_ask" value="{{house.price_ask}}"></td></tr>
-                <tr><td>Sale Date: </td><td><input type="date" id="date_sale" value="{{house.date_sale}}"></td></tr>
-                <tr><td>Final Sale Price: </td><td><input type="number" id="price_sale" value="{{house.price_sale}}"></td></tr>
-                <tr><td>Additional Notes: </td><td><textarea class="mb-2" rows=5 style="width:100%; max-width:500px;" type="text" id="notes" name="notes" value="{{house.notes}}"></textarea></td></tr>
-            </table>
+
+<div class="container-fluid mt-0" style="margin-top:36px;">
+    <a href={{house.link}}>View Advertisement</a>
+    <p></p>
+    <div class="panel-group" id="accordion">
+        <!-- House General-->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h2 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseHouse" class="details-section-heading">House</a>
+                </h2>
+            </div>
+            <div id="collapseHouse" class="panel-collapse collapse in">
+                <article class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">House Overview</h5>
+                        <table class="details-table" width=100%>
+                            <tr><td width="200px">Address: </td><td><input class="mb-2" style="width:100%; max-width:500px;" type="text" id="address" name="address" value="{{house.address}}"></td></tr>
+                            <tr><td>Suburb: </td><td><input class="mb-2" type="text" name="suburb" value="{{house.suburb}}"></td></tr>
+                            <tr><td>Date on Market: </td><td><input type="date" name="date_market" value="{{house.date_m}}"></td></tr>
+                            <tr><td>Asking Price: </td><td><input type="number" name="price_ask" value="{{house.price_ask}}"></td></tr>
+                            <tr><td>Sale Date: </td><td><input type="date" name="date_sale" value="{{house.date_s}}"></td></tr>
+                            <tr><td>Final Sale Price: </td><td><input type="number" name="price_sale" value="{{house.price_sale}}"></td></tr>
+                            <tr><td>Additional Notes: </td><td><textarea class="mb-2" rows=5 style="width:100%; max-width:500px;" type="text" form="updateForm" name="notes">{{house.notes}}</textarea></td></tr>
+                        </table>
+                    </div>
+                </article>
+                <article class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">House Details</h5>
+                        <table class="details-table" width=100%>
+                            <tr><td width="200px">Land Size (m2): </td><td><input type="number" name="land_size" value="{{house.land_size}}"></td></tr>
+                            <tr><td>House Size (m2): </td><td><input type="number" name="house_size" value="{{house.house_size}}"></td></tr>
+                            <tr><td>Construction Material: </td><td><select name="construction_mat">
+                                <option value=0 style="color:grey;">Select from...</option>
+                                <option value=1 {% if house.construction_mat == 1%} selected {% endif %}>Wood</option>
+                                <option value=2 {% if house.construction_mat == 2%} selected {% endif %}>Brick</option>
+                                <option value=3 {% if house.construction_mat == 3%} selected {% endif %}>Other</option>
+                            </select></td></tr>
+                            <tr><td>Street Type: </td><td><select name="street_type">
+                                <option value=0 style="color:grey;">Select from...</option>
+                                <option value=1 {% if house.street_type == 1%} selected {% endif %}>Main Road</option>
+                                <option value=2 {% if house.street_type == 2%} selected {% endif %}>Busy Road</option>
+                                <option value=3 {% if house.street_type == 3%} selected {% endif %}>Quiet Road</option>
+                                <option value=4 {% if house.street_type == 4%} selected {% endif %}>Dead End</option>
+                            </select></td></tr>
+                            <tr><td>Roof Material: </td><td><select name="roof_mat">
+                                <option value=0 style="color:grey;">Select from...</option>
+                                <option value=1 {% if house.roof_mat == 1%} selected {% endif %}>Corrugated Iron</option>
+                                <option value=2 {% if house.roof_mat == 2%} selected {% endif %}>Tile</option>
+                                <option value=3 {% if house.roof_mat == 3%} selected {% endif %}>Other</option>
+                            </select></td></tr>
+                            <tr><td>Roof Condition: </td><td><select name="roof_cond">
+                                <option value=0 style="color:grey;">Select from...</option>
+                                <option value=1 {% if house.roof_cond == 1%} selected {% endif %}>Poor</option>
+                                <option value=2 {% if house.roof_cond == 2%} selected {% endif %}>Good</option>
+                            </select></td></tr>
+                            <tr><td>Insulation: </td><td><select name="insulation">
+                                <option value='' style="color:grey;">Select Yes or No...</option>
+                                <option value=0 {% if house.insulation == 0%} selected {% endif %}>No</option>
+                                <option value=1 {% if house.insulation == 1%} selected {% endif %}>Yes</option>
+                            </select></td></tr>
+                            <tr><td>Driveway Condition: </td><td><select name="driveway_cond">
+                                <option value=0 style="color:grey;">Select from...</option>
+                                <option value=1 {% if house.driveway_cond == 1%} selected {% endif %}>Poor</option>
+                                <option value=2 {% if house.driveway_cond == 2%} selected {% endif %}>Good</option>
+                            </select></td></tr>
+                            <tr><td>Fenced Yard: </td><td><select name="fenced">
+                                <option value=0 style="color:grey;">Select from...</option>
+                                <option value=1 {% if house.fenced == 1%} selected {% endif %}>None/Incomplete</option>
+                                <option value=2 {% if house.fenced == 2%} selected {% endif %}>Back Only</option>
+                                <option value=3 {% if house.fenced == 3%} selected {% endif %}>Fully Fenced</option>
+                            </select></td></tr>
+                            <tr><td>Fenced Condition: </td><td><select name="fence_cond">
+                                <option value=0 style="color:grey;">Select from...</option>
+                                <option value=1 {% if house.fence_cond == 1%} selected {% endif %}>No Fence</option>
+                                <option value=2 {% if house.fence_cond == 2%} selected {% endif %}>Poor</option>
+                                <option value=3 {% if house.fence_cond == 3%} selected {% endif %}>Mixed</option>
+                                <option value=4 {% if house.fence_cond == 4%} selected {% endif %}>Good</option>
+                            </select></td></tr>
+                            <tr><td>Backyard Size: </td><td><select name="backyard_size">
+                                <option value=0 style="color:grey;">Select from...</option>
+                                <option value=1 {% if house.backyard_size == 1%} selected {% endif %}>None</option>
+                                <option value=2 {% if house.backyard_size == 2%} selected {% endif %}>Small</option>
+                                <option value=3 {% if house.backyard_size == 3%} selected {% endif %}>Medium</option>
+                                <option value=4 {% if house.backyard_size == 4%} selected {% endif %}>Large</option>
+                            </select></td></tr>
+                            <tr><td>Is the yard level? </td><td><select name="yard_level">
+                                <option value=0 style="color:grey;">Select from...</option>
+                                <option value=1 {% if house.yard_level == 1%} selected {% endif %}>No Yard</option>
+                                <option value=2 {% if house.yard_level == 2%} selected {% endif %}>Unlevel</option>
+                                <option value=3 {% if house.yard_level == 3%} selected {% endif %}>Partially Level</option>
+                                <option value=4 {% if house.yard_level == 4%} selected {% endif %}>Level</option>
+                            </select></td></tr>
+                            <tr><td>Landscaping: </td><td><select name="landcaping_cond">
+                                <option value=0 style="color:grey;">Select from...</option>
+                                <option value=1 {% if house.landcaping_cond == 1%} selected {% endif %}>Poor</option>
+                                <option value=2 {% if house.landcaping_cond == 2%} selected {% endif %}>Good, high maintenance</option>
+                                <option value=3 {% if house.landcaping_cond == 3%} selected {% endif %}>Good, low maintenance</option>
+                            </select></td></tr>
+                            <tr><td>Pool: </td><td><select name="pool">
+                                <option value=0 style="color:grey;">Select from...</option>
+                                <option value=1 {% if house.pool == 1%} selected {% endif %}>None</option>
+                                <option value=2 {% if house.pool == 2%} selected {% endif %}>Old</option>
+                                <option value=3 {% if house.pool == 3%} selected {% endif %}>New</option>
+                            </select></td></tr>
+                            <tr><td>Pool Type (Chlorine/Salt): </td><td><select name="pool_type">
+                                <option value=0 style="color:grey;">Select from...</option>
+                                <option value=1 {% if house.pool_type == 1%} selected {% endif %}>Chlorine</option>
+                                <option value=2 {% if house.pool_type == 2%} selected {% endif %}>Salt</option>
+                                <option value=3 {% if house.pool_type == 3%} selected {% endif %}>Bromine</option>
+                            </select></td></tr>
+                            <tr><td>Pool Construction (Inground/Above Ground): </td><td><select name="pool_construction">
+                                <option value=0 style="color:grey;">Select from...</option>
+                                <option value=1 {% if house.pool_construction == 1%} selected {% endif %}>Inground</option>
+                                <option value=2 {% if house.pool_construction == 2%} selected {% endif %}>Above Ground</option>
+                                <option value=3 {% if house.pool_construction == 3%} selected {% endif %}>Above Ground (in the ground)</option>
+                            </select></td></tr>
+                            <tr><td>Pool Filter: </td><td><select name="pool_filter">
+                                <option value=0 style="color:grey;">Select from...</option>
+                                <option value=1 {% if house.pool_filter == 1%} selected {% endif %}>Cartridge</option>
+                                <option value=2 {% if house.pool_filter == 2%} selected {% endif %}>Brick</option>
+                                <option value=3 {% if house.pool_filter == 3%} selected {% endif %}>Other</option>
+                            </select></td></tr>
+                            <tr><td>Pool Cleaner: </td><td><select name="pool_cleaner">
+                                <option value=0 style="color:grey;">Select from...</option>
+                                <option value=1 {% if house.pool_cleaner == 1%} selected {% endif %}>None</option>
+                                <option value=2 {% if house.pool_cleaner == 2%} selected {% endif %}>Creepy Crawly</option>
+                                <option value=3 {% if house.pool_cleaner == 3%} selected {% endif %}>Robot</option>
+                            </select></td></tr>
+                        </table>
+                    </div>
+                </article>
+                <article class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">House Condition</h5>
+                        <table class="details-table" width=100%>
+                            <tr><td width="200px">Underhouse Access: </td><td><select name="underhouse_access">
+                                <option value='' style="color:grey;">Select Yes or No...</option>
+                                <option value=0 {% if house.underhouse_access == 0%} selected {% endif %}>No</option>
+                                <option value=1 {% if house.underhouse_access == 1%} selected {% endif %}>Yes</option>
+                            </select></td></tr>
+                            <tr><td>Council Approval (for extensions or renovations): </td><td><select name="council_approval">
+                                <option value='' style="color:grey;">Select Yes or No...</option>
+                                <option value=0 {% if house.council_approval == 0%} selected {% endif %}>No</option>
+                                <option value=1 {% if house.council_approval == 1%} selected {% endif %}>Yes</option>
+                            </select></td></tr>
+                            <tr><td>Large cracks in building: </td><td><select name="cracks">
+                                <option value=0 style="color:grey;">Select from...</option>
+                                <option value=1 {% if house.cracks == 1%} selected {% endif %}>None</option>
+                                <option value=2 {% if house.cracks == 2%} selected {% endif %}>Single</option>
+                                <option value=3 {% if house.cracks == 3%} selected {% endif %}>Multiple</option>
+                            </select></td></tr>
+                            <tr><td>Are Roof Lines Straight? </td><td><select name="roof_lines">
+                                <option value='' style="color:grey;">Select Yes or No...</option>
+                                <option value=0 {% if house.roof_lines == 0%} selected {% endif %}>No</option>
+                                <option value=1 {% if house.roof_lines == 1%} selected {% endif %}>Yes</option>
+                            </select></td></tr>
+                            <tr><td>Gutters' Condition: </td><td><select name="gutters_cond">
+                                <option value=0 style="color:grey;">Select from...</option>
+                                <option value=1 {% if house.gutters_cond == 1%} selected {% endif %}>Rusty</option>
+                                <option value=2 {% if house.gutters_cond == 2%} selected {% endif %}>Blocked</option>
+                                <option value=3 {% if house.gutters_cond == 3%} selected {% endif %}>Good</option>
+                            </select></td></tr>
+                            <tr><td>Downpipes: </td><td><select name="downpipes">
+                                <option value=0 style="color:grey;">Select from...</option>
+                                <option value=1 {% if house.downpipes == 1%} selected {% endif %}>Evidence of flooding at base</option>
+                                <option value=2 {% if house.downpipes == 2%} selected {% endif %}>Drains to ground</option>
+                                <option value=3 {% if house.downpipes == 3%} selected {% endif %}>Drains to soak well</option>
+                            </select></td></tr>
+                            <tr><td>Trees near the house: </td><td><select name="trees">
+                                <option value=0 style="color:grey;">Select from...</option>
+                                <option value=1 {% if house.trees == 1%} selected {% endif %}>None</option>
+                                <option value=2 {% if house.trees == 2%} selected {% endif %}>Small</option>
+                                <option value=3 {% if house.trees == 3%} selected {% endif %}>Large</option>
+                            </select></td></tr>
+                            <tr><td>Outside Electrics' Condition: </td><td><select name="outside_elec_cond">
+                                <option value=0 style="color:grey;">Select from...</option>
+                                <option value=1 {% if house.outside_elec_cond == 1%} selected {% endif %}>None</option>
+                                <option value=2 {% if house.outside_elec_cond == 2%} selected {% endif %}>Loose or broken power points or cables</option>
+                                <option value=3 {% if house.outside_elec_cond == 3%} selected {% endif %}>Good</option>
+                            </select></td></tr>
+                            <tr><td>Flood Zone: </td><td><select name="flood_zone">
+                                <option value='' style="color:grey;">Select Yes or No...</option>
+                                <option value=0 {% if house.flood_zone == 0%} selected {% endif %}>No</option>
+                                <option value=1 {% if house.flood_zone == 1%} selected {% endif %}>Yes</option>
+                            </select></td></tr>
+                            <tr><td>Sewage: </td><td><select name="sewage">
+                                <option value=0 style="color:grey;">Select from...</option>
+                                <option value=1 {% if house.sewage == 1%} selected {% endif %}>Separate</option>
+                                <option value=2 {% if house.sewage == 2%} selected {% endif %}>Connets to combine drain</option>
+                                <option value=3 {% if house.sewage == 3%} selected {% endif %}>Is combine drain</option>
+                            </select></td></tr>
+                        </table>
+                    </div>
+                </article>
+            </div>
         </div>
-    </article>
-    <article class="card">
-        <div class="card-body">
-            <h5 class="card-title">House Details</h5>
-            <table>
-                <tr><td width="200px">Land Size (m2): </td><td><input type="number" id="land_size" value="{{house.land_size}}"></td></tr>
-                <tr><td>House Size (m2): </td><td><input type="number" id="house_size" value="{{house.house_size}}"></td></tr>
-                <tr><td>Construction Material: </td><td><select id="construction_mat" value="{{house.construction_mat}}">
-                    <option value=0>Select from...</option>
-                    <option value=1>Wood</option>
-                    <option value=2>Brick</option>
-                    <option value=3>Other</option>
-                </select></td></tr>
-                <tr><td>Street Type: </td><td><select id="street_type" value="{{house.street_type}}">
-                    <option value=0>Select from...</option>
-                    <option value=1>Main Road</option>
-                    <option value=2>Busy Road</option>
-                    <option value=3>Quiet Road</option>
-                    <option value=4>Dead End</option>
-                </select></td></tr>
-                <tr><td>Roof Material: </td><td><select id="roof_mat" value="{{house.roof_mat}}">
-                    <option value=0>Select from...</option>
-                    <option value=1>Corrugated Iron</option>
-                    <option value=2>Tile</option>
-                    <option value=3>Other</option>
-                </select></td></tr>
-                <tr><td>Roof Condition: </td><td><select id="roof_cond" value="{{house.roof_cond}}">
-                    <option value=0>Select from...</option>
-                    <option value=1>Poor</option>
-                    <option value=2>Good</option>
-                </select></td></tr>
-                <tr><td>Insulation: </td><td><select id="construction_mat" value="{{house.construction_mat}}">
-                    <option value=-1>Select Yes or No...</option>
-                    <option value=0>No</option>
-                    <option value=1>Yes</option>
-                </select></td></tr>
-                <tr><td>Driveway Condition: </td><td><select id="driveway_cond" value="{{house.driveway_cond}}">
-                    <option value=0>Select from...</option>
-                    <option value=1>Poor</option>
-                    <option value=2>Good</option>
-                </select></td></tr>
-                <tr><td>Fenced Yard: </td><td><select id="fenced" value="{{house.fenced}}">
-                    <option value=0>Select from...</option>
-                    <option value=1>None/Incomplete</option>
-                    <option value=2>Back Only</option>
-                    <option value=3>Fully Fenced</option>
-                </select></td></tr>
-                <tr><td>Fenced Condition: </td><td><select id="fence_cond" value="{{house.fence_cond}}">
-                    <option value=0>Select from...</option>
-                    <option value=1>No Fence</option>
-                    <option value=2>Poor</option>
-                    <option value=3>Mixed</option>
-                    <option value=4>Good</option>
-                </select></td></tr>
-                <tr><td>Backyard Size: </td><td><select id="backyard_size" value="{{house.backyard_size}}">
-                    <option value=0>Select from...</option>
-                    <option value=1>None</option>
-                    <option value=2>Small</option>
-                    <option value=3>Medium</option>
-                    <option value=4>Large</option>
-                </select></td></tr>
-                <tr><td>Is the yard level? </td><td><select id="yard_level" value="{{house.yard_level}}">
-                    <option value=0>Select from...</option>
-                    <option value=1>No Yard</option>
-                    <option value=2>Unlevel</option>
-                    <option value=3>Partially Level</option>
-                    <option value=4>Level</option>
-                </select></td></tr>
-                <tr><td>Landscaping: </td><td><select id="landcaping_cond" value="{{house.landcaping_cond}}">
-                    <option value=0>Select from...</option>
-                    <option value=1>Poor</option>
-                    <option value=2>Good, high maintenance</option>
-                    <option value=3>Good, low maintenance</option>
-                </select></td></tr>
-                <tr><td>Pool: </td><td><select id="pool" value="{{house.pool}}">
-                    <option value=0>Select from...</option>
-                    <option value=1>None</option>
-                    <option value=2>Old</option>
-                    <option value=3>New</option>
-                </select></td></tr>
-                <tr><td>Pool Type (Chlorine/Salt): </td><td><select id="pool_type" value="{{house.pool_type}}">
-                    <option value=0>Select from...</option>
-                    <option value=1>Chlorine</option>
-                    <option value=2>Salt</option>
-                    <option value=3>Bromine</option>
-                </select></td></tr>
-                <tr><td>Pool Construction (Inground/Above Ground): </td><td><select id="pool_construction" value="{{house.pool_construction}}">
-                    <option value=0>Select from...</option>
-                    <option value=1>Inground</option>
-                    <option value=2>Above Ground</option>
-                    <option value=3>Above Ground (in the ground)</option>
-                </select></td></tr>
-                <tr><td>Pool Filter: </td><td><select id="pool_filter" value="{{house.pool_filter}}">
-                    <option value=0>Select from...</option>
-                    <option value=1>Cartridge</option>
-                    <option value=2>Brick</option>
-                    <option value=3>Other</option>
-                </select></td></tr>
-                <tr><td>Pool Cleaner: </td><td><select id="pool_cleaner" value="{{house.pool_cleaner}}">
-                    <option value=0>Select from...</option>
-                    <option value=1>None</option>
-                    <option value=2>Creepy Crawly</option>
-                    <option value=3>Robot</option>
-                </select></td></tr>
-            </table>
+        <!-- Bedrooms-->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h2 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseBedrooms" class="details-section-heading">Bedrooms</a>
+                </h2>
+            </div>
+            <div id="collapseBedrooms" class="panel-collapse collapse">
+                <div id="bedrooms">
+                    {% for i in range(0,bedroom_qty)%}
+                    <article class="card" id="bedroom-{{bedrooms[i].id}}">
+                        <div class="card-body">
+                            {%if i == 0 %}
+                                <h5 class="card-title">Master Bedroom</h5>
+                            {% else %}
+                                <h5 class="card-title">Bedroom {{i+1}}</h5>
+                            {% endif %}
+                            <table class="details-table" width=100%>
+                                <tr><td width="200px">Size: </td><td><select name="bedroom-{{i}}-size">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bedrooms[i].room.size == 1%} selected {% endif %}>Small</option>
+                                    <option value=2 {% if bedrooms[i].room.size == 2%} selected {% endif %}>Medium</option>
+                                    <option value=3 {% if bedrooms[i].room.size == 3%} selected {% endif %}>Large</option>
+                                </select></td></tr>
+                                <tr><td>Floor Material: </td><td><select name="bedroom-{{i}}-floor_mat">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bedrooms[i].room.floor_mat == 1%} selected {% endif %}>Wood</option>
+                                    <option value=2 {% if bedrooms[i].room.floor_mat == 2%} selected {% endif %}>Tile</option>
+                                    <option value=3 {% if bedrooms[i].room.floor_mat == 3%} selected {% endif %}>Carpet</option>
+                                    <option value=4 {% if bedrooms[i].room.floor_mat == 4%} selected {% endif %}>Lino</option>
+                                    <option value=5 {% if bedrooms[i].room.floor_mat == 5%} selected {% endif %}>Other</option>
+                                </select></td></tr>
+                                <tr><td>Layout: </td><td><select name="bedroom-{{i}}-layout">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bedrooms[i].room.layout == 1%} selected {% endif %}>Poor</option>
+                                    <option value=2 {% if bedrooms[i].room.layout == 2%} selected {% endif %}>Good</option>
+                                </select></td></tr>
+                                <tr><td>Power Points (Number/Location/Quality): </td><td><select name="bedroom-{{i}}-power_points">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bedrooms[i].room.power_points == 1%} selected {% endif %}>Bad locations</option>
+                                    <option value=2 {% if bedrooms[i].room.power_points == 2%} selected {% endif %}>Old style</option>
+                                    <option value=3 {% if bedrooms[i].room.power_points == 3%} selected {% endif %}>Good location and updated</option>
+                                </select></td></tr>
+                                <tr><td>Door Close Easily? </td><td><select name="bedroom-{{i}}-door_close">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bedrooms[i].room.door_close == 1%} selected {% endif %}>Jams or sticks</option>
+                                    <option value=2 {% if bedrooms[i].room.door_close == 2%} selected {% endif %}>Door operates correctly</option>
+                                </select></td></tr>
+                                <tr><td>Natural Lighting: </td><td><select name="bedroom-{{i}}-light_natural">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bedrooms[i].room.light_natural == 1%} selected {% endif %}>Dark</option>
+                                    <option value=2 {% if bedrooms[i].room.light_natural == 2%} selected {% endif %}>Adequate</option>
+                                    <option value=3 {% if bedrooms[i].room.light_natural == 3%} selected {% endif %}>Bright</option>
+                                </select></td></tr>
+                                <tr><td>Artificial Lighting: </td><td><select name="bedroom-{{i}}-light_artificial">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bedrooms[i].room.light_artificial == 1%} selected {% endif %}>Poor</option>
+                                    <option value=2 {% if bedrooms[i].room.light_artificial == 2%} selected {% endif %}>Good</option>
+                                    <option value=3 {% if bedrooms[i].room.light_artificial == 3%} selected {% endif %}>Good (LED)</option>
+                                </select></td></tr>
+                                <tr><td>Window Operation: </td><td><select name="bedroom-{{i}}-window_op">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bedrooms[i].room.window_op == 1%} selected {% endif %}>Sticks/jams</option>
+                                    <option value=2 {% if bedrooms[i].room.window_op == 2%} selected {% endif %}>Opens and closes easily</option>
+                                </select></td></tr>
+                                <tr><td>Fly Screen: </td><td><select name="bedroom-{{i}}-fly_screens">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bedrooms[i].room.fly_screens == 1%} selected {% endif %}>None</option>
+                                    <option value=2 {% if bedrooms[i].room.fly_screens == 2%} selected {% endif %}>Poor Quality</option>
+                                    <option value=3 {% if bedrooms[i].room.fly_screens == 3%} selected {% endif %}>Good Quality</option>
+                                </select></td></tr>
+                                <tr><td>Walls with Windows: </td><td><input type="number" name="bedroom-{{i}}-wall_windows_qty" value="{{bedrooms[i].room.wall_windows_qty}}"></td></tr>
+                                <tr><td>Window Wall 1 Direction: </td><td><select name="bedroom-{{i}}-window_dir_1">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bedrooms[i].room.window_dir_1 == 1%} selected {% endif %}>N</option>
+                                    <option value=2 {% if bedrooms[i].room.window_dir_1 == 2%} selected {% endif %}>NNE</option>
+                                    <option value=3 {% if bedrooms[i].room.window_dir_1 == 3%} selected {% endif %}>NE</option>
+                                    <option value=4 {% if bedrooms[i].room.window_dir_1 == 4%} selected {% endif %}>NEE</option>
+                                    <option value=5 {% if bedrooms[i].room.window_dir_1 == 5%} selected {% endif %}>E</option>
+                                    <option value=6 {% if bedrooms[i].room.window_dir_1 == 6%} selected {% endif %}>SEE</option>
+                                    <option value=7 {% if bedrooms[i].room.window_dir_1 == 7%} selected {% endif %}>SE</option>
+                                    <option value=8 {% if bedrooms[i].room.window_dir_1 == 8%} selected {% endif %}>SSE</option>
+                                    <option value=9 {% if bedrooms[i].room.window_dir_1 == 9%} selected {% endif %}>S</option>
+                                    <option value=10 {% if bedrooms[i].room.window_dir_1 == 10%} selected {% endif %}>SSW</option>
+                                    <option value=11 {% if bedrooms[i].room.window_dir_1 == 11%} selected {% endif %}>SW</option>
+                                    <option value=12 {% if bedrooms[i].room.window_dir_1 == 12%} selected {% endif %}>SWW</option>
+                                    <option value=13 {% if bedrooms[i].room.window_dir_1 == 13%} selected {% endif %}>W</option>
+                                    <option value=14 {% if bedrooms[i].room.window_dir_1 == 14%} selected {% endif %}>NWW</option>
+                                    <option value=15 {% if bedrooms[i].room.window_dir_1 == 15%} selected {% endif %}>NW</option>
+                                    <option value=16 {% if bedrooms[i].room.window_dir_1 == 16%} selected {% endif %}>NNW</option>
+                                </select></td></tr>
+                                <tr><td>Window Wall 2 Direction: </td><td><select name="bedroom-{{i}}-window_dir_2">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bedrooms[i].room.window_dir_2 == 1%} selected {% endif %}>N</option>
+                                    <option value=2 {% if bedrooms[i].room.window_dir_2 == 2%} selected {% endif %}>NNE</option>
+                                    <option value=3 {% if bedrooms[i].room.window_dir_2 == 3%} selected {% endif %}>NE</option>
+                                    <option value=4 {% if bedrooms[i].room.window_dir_2 == 4%} selected {% endif %}>NEE</option>
+                                    <option value=5 {% if bedrooms[i].room.window_dir_2 == 5%} selected {% endif %}>E</option>
+                                    <option value=6 {% if bedrooms[i].room.window_dir_2 == 6%} selected {% endif %}>SEE</option>
+                                    <option value=7 {% if bedrooms[i].room.window_dir_2 == 7%} selected {% endif %}>SE</option>
+                                    <option value=8 {% if bedrooms[i].room.window_dir_2 == 8%} selected {% endif %}>SSE</option>
+                                    <option value=9 {% if bedrooms[i].room.window_dir_2 == 9%} selected {% endif %}>S</option>
+                                    <option value=10 {% if bedrooms[i].room.window_dir_2 == 10%} selected {% endif %}>SSW</option>
+                                    <option value=11 {% if bedrooms[i].room.window_dir_2 == 11%} selected {% endif %}>SW</option>
+                                    <option value=12 {% if bedrooms[i].room.window_dir_2 == 12%} selected {% endif %}>SWW</option>
+                                    <option value=13 {% if bedrooms[i].room.window_dir_2 == 13%} selected {% endif %}>W</option>
+                                    <option value=14 {% if bedrooms[i].room.window_dir_2 == 14%} selected {% endif %}>NWW</option>
+                                    <option value=15 {% if bedrooms[i].room.window_dir_2 == 15%} selected {% endif %}>NW</option>
+                                    <option value=16 {% if bedrooms[i].room.window_dir_2 == 16%} selected {% endif %}>NNW</option>
+                                </select></td></tr>
+                                <tr><td>Window Wall 3 Direction: </td><td><select name="bedroom-{{i}}-window_dir_3">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bedrooms[i].room.window_dir_3 == 1%} selected {% endif %}>N</option>
+                                    <option value=2 {% if bedrooms[i].room.window_dir_3 == 2%} selected {% endif %}>NNE</option>
+                                    <option value=3 {% if bedrooms[i].room.window_dir_3 == 3%} selected {% endif %}>NE</option>
+                                    <option value=4 {% if bedrooms[i].room.window_dir_3 == 4%} selected {% endif %}>NEE</option>
+                                    <option value=5 {% if bedrooms[i].room.window_dir_3 == 5%} selected {% endif %}>E</option>
+                                    <option value=6 {% if bedrooms[i].room.window_dir_3 == 6%} selected {% endif %}>SEE</option>
+                                    <option value=7 {% if bedrooms[i].room.window_dir_3 == 7%} selected {% endif %}>SE</option>
+                                    <option value=8 {% if bedrooms[i].room.window_dir_3 == 8%} selected {% endif %}>SSE</option>
+                                    <option value=9 {% if bedrooms[i].room.window_dir_3 == 9%} selected {% endif %}>S</option>
+                                    <option value=10 {% if bedrooms[i].room.window_dir_3 == 10%} selected {% endif %}>SSW</option>
+                                    <option value=11 {% if bedrooms[i].room.window_dir_3 == 11%} selected {% endif %}>SW</option>
+                                    <option value=12 {% if bedrooms[i].room.window_dir_3 == 12%} selected {% endif %}>SWW</option>
+                                    <option value=13 {% if bedrooms[i].room.window_dir_3 == 13%} selected {% endif %}>W</option>
+                                    <option value=14 {% if bedrooms[i].room.window_dir_3 == 14%} selected {% endif %}>NWW</option>
+                                    <option value=15 {% if bedrooms[i].room.window_dir_3 == 15%} selected {% endif %}>NW</option>
+                                    <option value=16 {% if bedrooms[i].room.window_dir_3 == 16%} selected {% endif %}>NNW</option>
+                                </select></td></tr>
+                                <tr><td>Sagging Ceiling? </td><td><select name="bedroom-{{i}}-ceiling_sag">
+                                    <option value='' style="color:grey;">Select Yes or No...</option>
+                                    <option value=0 {% if bedrooms[i].room.ceiling_sag == 0%} selected {% endif %}>No</option>
+                                    <option value=1 {% if bedrooms[i].room.ceiling_sag == 1%} selected {% endif %}>Yes</option>
+                                </select></td></tr>
+                                <tr><td>Signs of Moisture: </td><td><select name="bedroom-{{i}}-moisture">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bedrooms[i].room.moisture == 1%} selected {% endif %}>None</option>
+                                    <option value=2 {% if bedrooms[i].room.moisture == 2%} selected {% endif %}>Poor Quality</option>
+                                    <option value=3 {% if bedrooms[i].room.moisture == 3%} selected {% endif %}>Good Quality</option>
+                                </select></td></tr>
+                                <tr><td>Plasterboard Defects - Fine Cracks (Map Cracking): </td><td><select name="bedroom-{{i}}-plasterboard_defects">
+                                    <option value='' style="color:grey;">Select Yes or No...</option>
+                                    <option value=0 {% if bedrooms[i].room.plasterboard_defects == 0%} selected {% endif %}>No</option>
+                                    <option value=1 {% if bedrooms[i].room.plasterboard_defects == 1%} selected {% endif %}>Yes</option>
+                                </select></td></tr>
+                                <tr><td>Ceiling Fan: </td><td><select name="bedroom-{{i}}-fan">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bedrooms[i].fan == 1%} selected {% endif %}>None</option>
+                                    <option value=2 {% if bedrooms[i].fan == 2%} selected {% endif %}>Old</option>
+                                    <option value=3 {% if bedrooms[i].fan == 3%} selected {% endif %}>New</option>
+                                </select></td></tr>
+                                <tr><td>Air Conditioning: </td><td><select name="bedroom-{{i}}-ac">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bedrooms[i].ac == 1%} selected {% endif %}>None</option>
+                                    <option value=2 {% if bedrooms[i].ac == 2%} selected {% endif %}>Old</option>
+                                    <option value=3 {% if bedrooms[i].ac == 3%} selected {% endif %}>New</option>
+                                </select></td></tr>
+                                <tr><td>Blinds: </td><td><select name="bedroom-{{i}}-blinds">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bedrooms[i].blinds == 1%} selected {% endif %}>None</option>
+                                    <option value=2 {% if bedrooms[i].blinds == 2%} selected {% endif %}>Non-Blackout</option>
+                                    <option value=3 {% if bedrooms[i].blinds == 3%} selected {% endif %}>Blackout (Poor Condition)</option>
+                                    <option value=4 {% if bedrooms[i].blinds == 4%} selected {% endif %}>Blackout (Good Condition)</option>
+                                </select></td></tr>
+                                <tr><td>Wardrobe: </td><td><select name="bedroom-{{i}}-wardrobe">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bedrooms[i].wardrobe == 1%} selected {% endif %}>None</option>
+                                    <option value=2 {% if bedrooms[i].wardrobe == 2%} selected {% endif %}>Small</option>
+                                    <option value=3 {% if bedrooms[i].wardrobe == 3%} selected {% endif %}>Large</option>
+                                    <option value=4 {% if bedrooms[i].wardrobe == 4%} selected {% endif %}>Walk-in</option>
+                                </select></td></tr>
+                                <tr><td>Walk-in Wardrobe: </td><td><select name="bedroom-{{i}}-walk_in">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bedrooms[i].walk_in == 1%} selected {% endif %}>None</option>
+                                    <option value=2 {% if bedrooms[i].walk_in == 2%} selected {% endif %}>None but space to build one</option>
+                                    <option value=3 {% if bedrooms[i].walk_in == 3%} selected {% endif %}>Small</option>
+                                    <option value=4 {% if bedrooms[i].walk_in == 4%} selected {% endif %}>Large</option>
+                                </select></td></tr>
+                            </table>
+                            <a class="btn button-color mt-3 mb-1" style="float: right;" onClick="removeBedroom({{bedrooms[i].id}})">Remove</a>
+                        </div>
+                    </article>
+                    {% endfor %}
+                </div>
+                <a class="btn button-color mb-3" onclick=newBedroom()>Add Bedroom</a>
+            </div>
         </div>
-    </article>
-    <article class="card">
-        <div class="card-body">
-            <h5 class="card-title">House Condition</h5>
-            <table>
-                <tr><td width="200px">Underhouse Access: </td><td><select id="underhouse_access" value="{{house.underhouse_access}}">
-                    <option value=-1>Select Yes or No...</option>
-                    <option value=0>No</option>
-                    <option value=1>Yes</option>
-                </select></td></tr>
-                <tr><td>Council Approval (for extensions or renovations): </td><td><select id="council_approval" value="{{house.council_approval}}">
-                    <option value=-1>Select Yes or No...</option>
-                    <option value=0>No</option>
-                    <option value=1>Yes</option>
-                </select></td></tr>
-                <tr><td>Large cracks in building: </td><td><select id="cracks" value="{{house.cracks}}">
-                    <option value=0>Select from...</option>
-                    <option value=1>None</option>
-                    <option value=2>Single</option>
-                    <option value=3>Multiple</option>
-                </select></td></tr>
-                <tr><td>Are Roof Lines Straight? </td><td><select id="roof_lines" value="{{house.roof_lines}}">
-                    <option value=-1>Select Yes or No...</option>
-                    <option value=0>No</option>
-                    <option value=1>Yes</option>
-                </select></td></tr>
-                <tr><td>Gutters' Condition: </td><td><select id="gutters_cond" value="{{house.gutters_cond}}">
-                    <option value=0>Select from...</option>
-                    <option value=1>Rusty</option>
-                    <option value=2>Blocked</option>
-                    <option value=3>Good</option>
-                </select></td></tr>
-                <tr><td>Downpipes: </td><td><select id="downpipes" value="{{house.downpipes}}">
-                    <option value=0>Select from...</option>
-                    <option value=1>Evidence of flooding at base</option>
-                    <option value=2>Drains to ground</option>
-                    <option value=3>Drains to soak well</option>
-                </select></td></tr>
-                <tr><td>Trees near the house: </td><td><select id="trees" value="{{house.trees}}">
-                    <option value=0>Select from...</option>
-                    <option value=1>None</option>
-                    <option value=2>Small</option>
-                    <option value=3>Large</option>
-                </select></td></tr>
-                <tr><td>Outside Electrics' Condition: </td><td><select id="outside_elec_cond" value="{{house.outside_elec_cond}}">
-                    <option value=0>Select from...</option>
-                    <option value=1>None</option>
-                    <option value=2>Loose or broken power points or cables</option>
-                    <option value=3>Good</option>
-                </select></td></tr>
-                <tr><td>Flood Zone: </td><td><select id="flood_zone" value="{{house.flood_zone}}">
-                    <option value=-1>Select Yes or No...</option>
-                    <option value=0>No</option>
-                    <option value=1>Yes</option>
-                </select></td></tr>
-                <tr><td>Sewage: </td><td><select id="sewage" value="{{house.sewage}}">
-                    <option value=0>Select from...</option>
-                    <option value=1>Separate</option>
-                    <option value=2>Connets to combine drain</option>
-                    <option value=3>Is combine drain</option>
-                </select></td></tr>
-            </table>
+        <!-- Kitchens-->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h2 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseKitchens" class="details-section-heading">Kitchen</a>
+                </h2>
+            </div>
+            <div id="collapseKitchens" class="panel-collapse collapse">
+                <div id="kitchens">
+                    {% for i in range(0,kitchen_qty)%}
+                    <article class="card" id="kitchen-{{kitchens[i].id}}">
+                        <div class="card-body">
+                            <h5 class="card-title">Kitchen {{i+1}}</h5>
+                            <table class="details-table" width=100%>
+                                <tr><td width="200px">Size: </td><td><select name="kitchen-{{i}}-size">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if kitchens[i].room.size == 1%} selected {% endif %}>Small</option>
+                                    <option value=2 {% if kitchens[i].room.size == 2%} selected {% endif %}>Medium</option>
+                                    <option value=3 {% if kitchens[i].room.size == 3%} selected {% endif %}>Large</option>
+                                </select></td></tr>
+                                <tr><td>Floor Material: </td><td><select name="kitchen-{{i}}-floor_mat">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if kitchens[i].room.floor_mat == 1%} selected {% endif %}>Wood</option>
+                                    <option value=2 {% if kitchens[i].room.floor_mat == 2%} selected {% endif %}>Tile</option>
+                                    <option value=3 {% if kitchens[i].room.floor_mat == 3%} selected {% endif %}>Carpet</option>
+                                    <option value=4 {% if kitchens[i].room.floor_mat == 4%} selected {% endif %}>Lino</option>
+                                    <option value=5 {% if kitchens[i].room.floor_mat == 5%} selected {% endif %}>Other</option>
+                                </select></td></tr>
+                                <tr><td>Layout: </td><td><select name="kitchen-{{i}}-layout">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if kitchens[i].room.layout == 1%} selected {% endif %}>Poor</option>
+                                    <option value=2 {% if kitchens[i].room.layout == 2%} selected {% endif %}>Good</option>
+                                </select></td></tr>
+                                <tr><td>Power Points (Number/Location/Quality): </td><td><select name="kitchen-{{i}}-power_points">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if kitchens[i].room.power_points == 1%} selected {% endif %}>Bad locations</option>
+                                    <option value=2 {% if kitchens[i].room.power_points == 2%} selected {% endif %}>Old style</option>
+                                    <option value=3 {% if kitchens[i].room.power_points == 3%} selected {% endif %}>Good location and updated</option>
+                                </select></td></tr>
+                                <tr><td>Door Close Easily? </td><td><select name="kitchen-{{i}}-door_close">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if kitchens[i].room.door_close == 1%} selected {% endif %}>Jams or sticks</option>
+                                    <option value=2 {% if kitchens[i].room.door_close == 2%} selected {% endif %}>Door operates correctly</option>
+                                </select></td></tr>
+                                <tr><td>Natural Lighting: </td><td><select name="kitchen-{{i}}-light_natural">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if kitchens[i].room.light_natural == 1%} selected {% endif %}>Dark</option>
+                                    <option value=2 {% if kitchens[i].room.light_natural == 2%} selected {% endif %}>Adequate</option>
+                                    <option value=3 {% if kitchens[i].room.light_natural == 3%} selected {% endif %}>Bright</option>
+                                </select></td></tr>
+                                <tr><td>Artificial Lighting: </td><td><select name="kitchen-{{i}}-light_artificial">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if kitchens[i].room.light_artificial == 1%} selected {% endif %}>Poor</option>
+                                    <option value=2 {% if kitchens[i].room.light_artificial == 2%} selected {% endif %}>Good</option>
+                                    <option value=3 {% if kitchens[i].room.light_artificial == 3%} selected {% endif %}>Good (LED)</option>
+                                </select></td></tr>
+                                <tr><td>Window Operation: </td><td><select name="kitchen-{{i}}-window_op">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if kitchens[i].room.window_op == 1%} selected {% endif %}>Sticks/jams</option>
+                                    <option value=2 {% if kitchens[i].room.window_op == 2%} selected {% endif %}>Opens and closes easily</option>
+                                </select></td></tr>
+                                <tr><td>Fly Screen: </td><td><select name="kitchen-{{i}}-fly_screens">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if kitchens[i].room.fly_screens == 1%} selected {% endif %}>None</option>
+                                    <option value=2 {% if kitchens[i].room.fly_screens == 2%} selected {% endif %}>Poor Quality</option>
+                                    <option value=3 {% if kitchens[i].room.fly_screens == 3%} selected {% endif %}>Good Quality</option>
+                                </select></td></tr>
+                                <tr><td>Walls with Windows: </td><td><input type="number" name="kitchen-{{i}}-wall_windows_qty" value="{{kitchens[i].room.wall_windows_qty}}"></td></tr>
+                                <tr><td>Window Wall 1 Direction: </td><td><select name="kitchen-{{i}}-window_dir_1">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if kitchens[i].room.window_dir_1 == 1%} selected {% endif %}>N</option>
+                                    <option value=2 {% if kitchens[i].room.window_dir_1 == 2%} selected {% endif %}>NNE</option>
+                                    <option value=3 {% if kitchens[i].room.window_dir_1 == 3%} selected {% endif %}>NE</option>
+                                    <option value=4 {% if kitchens[i].room.window_dir_1 == 4%} selected {% endif %}>NEE</option>
+                                    <option value=5 {% if kitchens[i].room.window_dir_1 == 5%} selected {% endif %}>E</option>
+                                    <option value=6 {% if kitchens[i].room.window_dir_1 == 6%} selected {% endif %}>SEE</option>
+                                    <option value=7 {% if kitchens[i].room.window_dir_1 == 7%} selected {% endif %}>SE</option>
+                                    <option value=8 {% if kitchens[i].room.window_dir_1 == 8%} selected {% endif %}>SSE</option>
+                                    <option value=9 {% if kitchens[i].room.window_dir_1 == 9%} selected {% endif %}>S</option>
+                                    <option value=10 {% if kitchens[i].room.window_dir_1 == 10%} selected {% endif %}>SSW</option>
+                                    <option value=11 {% if kitchens[i].room.window_dir_1 == 11%} selected {% endif %}>SW</option>
+                                    <option value=12 {% if kitchens[i].room.window_dir_1 == 12%} selected {% endif %}>SWW</option>
+                                    <option value=13 {% if kitchens[i].room.window_dir_1 == 13%} selected {% endif %}>W</option>
+                                    <option value=14 {% if kitchens[i].room.window_dir_1 == 14%} selected {% endif %}>NWW</option>
+                                    <option value=15 {% if kitchens[i].room.window_dir_1 == 15%} selected {% endif %}>NW</option>
+                                    <option value=16 {% if kitchens[i].room.window_dir_1 == 16%} selected {% endif %}>NNW</option>
+                                </select></td></tr>
+                                <tr><td>Window Wall 2 Direction: </td><td><select name="kitchen-{{i}}-window_dir_2">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if kitchens[i].room.window_dir_2 == 1%} selected {% endif %}>N</option>
+                                    <option value=2 {% if kitchens[i].room.window_dir_2 == 2%} selected {% endif %}>NNE</option>
+                                    <option value=3 {% if kitchens[i].room.window_dir_2 == 3%} selected {% endif %}>NE</option>
+                                    <option value=4 {% if kitchens[i].room.window_dir_2 == 4%} selected {% endif %}>NEE</option>
+                                    <option value=5 {% if kitchens[i].room.window_dir_2 == 5%} selected {% endif %}>E</option>
+                                    <option value=6 {% if kitchens[i].room.window_dir_2 == 6%} selected {% endif %}>SEE</option>
+                                    <option value=7 {% if kitchens[i].room.window_dir_2 == 7%} selected {% endif %}>SE</option>
+                                    <option value=8 {% if kitchens[i].room.window_dir_2 == 8%} selected {% endif %}>SSE</option>
+                                    <option value=9 {% if kitchens[i].room.window_dir_2 == 9%} selected {% endif %}>S</option>
+                                    <option value=10 {% if kitchens[i].room.window_dir_2 == 10%} selected {% endif %}>SSW</option>
+                                    <option value=11 {% if kitchens[i].room.window_dir_2 == 11%} selected {% endif %}>SW</option>
+                                    <option value=12 {% if kitchens[i].room.window_dir_2 == 12%} selected {% endif %}>SWW</option>
+                                    <option value=13 {% if kitchens[i].room.window_dir_2 == 13%} selected {% endif %}>W</option>
+                                    <option value=14 {% if kitchens[i].room.window_dir_2 == 14%} selected {% endif %}>NWW</option>
+                                    <option value=15 {% if kitchens[i].room.window_dir_2 == 15%} selected {% endif %}>NW</option>
+                                    <option value=16 {% if kitchens[i].room.window_dir_2 == 16%} selected {% endif %}>NNW</option>
+                                </select></td></tr>
+                                <tr><td>Window Wall 3 Direction: </td><td><select name="kitchen-{{i}}-window_dir_3">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if kitchens[i].room.window_dir_3 == 1%} selected {% endif %}>N</option>
+                                    <option value=2 {% if kitchens[i].room.window_dir_3 == 2%} selected {% endif %}>NNE</option>
+                                    <option value=3 {% if kitchens[i].room.window_dir_3 == 3%} selected {% endif %}>NE</option>
+                                    <option value=4 {% if kitchens[i].room.window_dir_3 == 4%} selected {% endif %}>NEE</option>
+                                    <option value=5 {% if kitchens[i].room.window_dir_3 == 5%} selected {% endif %}>E</option>
+                                    <option value=6 {% if kitchens[i].room.window_dir_3 == 6%} selected {% endif %}>SEE</option>
+                                    <option value=7 {% if kitchens[i].room.window_dir_3 == 7%} selected {% endif %}>SE</option>
+                                    <option value=8 {% if kitchens[i].room.window_dir_3 == 8%} selected {% endif %}>SSE</option>
+                                    <option value=9 {% if kitchens[i].room.window_dir_3 == 9%} selected {% endif %}>S</option>
+                                    <option value=10 {% if kitchens[i].room.window_dir_3 == 10%} selected {% endif %}>SSW</option>
+                                    <option value=11 {% if kitchens[i].room.window_dir_3 == 11%} selected {% endif %}>SW</option>
+                                    <option value=12 {% if kitchens[i].room.window_dir_3 == 12%} selected {% endif %}>SWW</option>
+                                    <option value=13 {% if kitchens[i].room.window_dir_3 == 13%} selected {% endif %}>W</option>
+                                    <option value=14 {% if kitchens[i].room.window_dir_3 == 14%} selected {% endif %}>NWW</option>
+                                    <option value=15 {% if kitchens[i].room.window_dir_3 == 15%} selected {% endif %}>NW</option>
+                                    <option value=16 {% if kitchens[i].room.window_dir_3 == 16%} selected {% endif %}>NNW</option>
+                                </select></td></tr>
+                                <tr><td>Sagging Ceiling? </td><td><select name="kitchen-{{i}}-ceiling_sag">
+                                    <option value='' style="color:grey;">Select Yes or No...</option>
+                                    <option value=0 {% if kitchens[i].room.ceiling_sag == 0%} selected {% endif %}>No</option>
+                                    <option value=1 {% if kitchens[i].room.ceiling_sag == 1%} selected {% endif %}>Yes</option>
+                                </select></td></tr>
+                                <tr><td>Signs of Moisture: </td><td><select name="kitchen-{{i}}-moisture">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if kitchens[i].room.moisture == 1%} selected {% endif %}>None</option>
+                                    <option value=2 {% if kitchens[i].room.moisture == 2%} selected {% endif %}>Poor Quality</option>
+                                    <option value=3 {% if kitchens[i].room.moisture == 3%} selected {% endif %}>Good Quality</option>
+                                </select></td></tr>
+                                <tr><td>Plasterboard Defects - Fine Cracks (Map Cracking): </td><td><select name="kitchen-{{i}}-plasterboard_defects">
+                                    <option value='' style="color:grey;">Select Yes or No...</option>
+                                    <option value=0 {% if kitchens[i].room.plasterboard_defects == 0%} selected {% endif %}>No</option>
+                                    <option value=1 {% if kitchens[i].room.plasterboard_defects == 1%} selected {% endif %}>Yes</option>
+                                </select></td></tr>
+
+                                <tr><td>Ceiling Fan: </td><td><select name="kitchen-{{i}}-fan">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if kitchens[i].fan == 1%} selected {% endif %}>None</option>
+                                    <option value=2 {% if kitchens[i].fan == 2%} selected {% endif %}>Old</option>
+                                    <option value=3 {% if kitchens[i].fan == 3%} selected {% endif %}>New</option>
+                                </select></td></tr>
+                                <tr><td>Air Conditioning: </td><td><select name="kitchen-{{i}}-ac">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if kitchens[i].ac == 1%} selected {% endif %}>None</option>
+                                    <option value=2 {% if kitchens[i].ac == 2%} selected {% endif %}>Old</option>
+                                    <option value=3 {% if kitchens[i].ac == 3%} selected {% endif %}>New</option>
+                                </select></td></tr>
+                                <tr><td>Overall Quality: </td><td><select name="kitchen-{{i}}-quality">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if kitchens[i].quality == 1%} selected {% endif %}>Needs immediate update</option>
+                                    <option value=2 {% if kitchens[i].quality == 2%} selected {% endif %}>Dated</option>
+                                    <option value=3 {% if kitchens[i].quality == 3%} selected {% endif %}>Modern</option>
+                                </select></td></tr>
+                                <tr><td>Bench Material: </td><td><select name="kitchen-{{i}}-bench_mat">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if kitchens[i].bench_mat == 1%} selected {% endif %}>Lino</option>
+                                    <option value=2 {% if kitchens[i].bench_mat == 2%} selected {% endif %}>Wood</option>
+                                    <option value=3 {% if kitchens[i].bench_mat == 3%} selected {% endif %}>Stone/Granite</option>
+                                    <option value=4 {% if kitchens[i].bench_mat == 4%} selected {% endif %}>Concrete</option>
+                                </select></td></tr>
+                                <tr><td>Bench Space: </td><td><select name="kitchen-{{i}}-bench_space">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if kitchens[i].bench_space == 1%} selected {% endif %}>Small</option>
+                                    <option value=2 {% if kitchens[i].bench_space == 2%} selected {% endif %}>Adequate</option>
+                                    <option value=3 {% if kitchens[i].bench_space == 3%} selected {% endif %}>Plentiful</option>
+                                </select></td></tr>
+                                <tr><td>Cupboard Space: </td><td><select name="kitchen-{{i}}-cupboard_space">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if kitchens[i].cupboard_space == 1%} selected {% endif %}>Lacking</option>
+                                    <option value=2 {% if kitchens[i].cupboard_space == 2%} selected {% endif %}>Adequate</option>
+                                    <option value=3 {% if kitchens[i].cupboard_space == 3%} selected {% endif %}>Plentiful</option>
+                                </select></td></tr>
+                                <tr><td>Pantry Space: </td><td><select name="kitchen-{{i}}-pantry_space">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if kitchens[i].pantry_space == 1%} selected {% endif %}>None</option>
+                                    <option value=2 {% if kitchens[i].pantry_space == 2%} selected {% endif %}>Small</option>
+                                    <option value=3 {% if kitchens[i].pantry_space == 3%} selected {% endif %}>Large</option>
+                                    <option value=4 {% if kitchens[i].pantry_space == 4%} selected {% endif %}>Walk-in</option>
+                                </select></td></tr>
+                                <tr><td>Oven Size: </td><td><select name="kitchen-{{i}}-oven_size">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if kitchens[i].oven_size == 1%} selected {% endif %}>Small</option>
+                                    <option value=2 {% if kitchens[i].oven_size == 2%} selected {% endif %}>Large</option>
+                                </select></td></tr>
+                                <tr><td>Cooktop: </td><td><select name="kitchen-{{i}}-cooktop">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if kitchens[i].cooktop == 1%} selected {% endif %}>Old Electric</option>
+                                    <option value=2 {% if kitchens[i].cooktop == 2%} selected {% endif %}>New Electric</option>
+                                    <option value=3 {% if kitchens[i].cooktop == 3%} selected {% endif %}>Induction</option>
+                                    <option value=4 {% if kitchens[i].cooktop == 4%} selected {% endif %}>Gas</option>
+                                </select></td></tr>
+                                <tr><td>Sink: </td><td><select name="kitchen-{{i}}-sink">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if kitchens[i].sink == 1%} selected {% endif %}>Small</option>
+                                    <option value=2 {% if kitchens[i].sink == 2%} selected {% endif %}>Large</option>
+                                    <option value=3 {% if kitchens[i].sink == 3%} selected {% endif %}>Farmhouse</option>
+                                </select></td></tr>
+                                <tr><td>Water Pressure: </td><td><select name="kitchen-{{i}}-water_pressure">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if kitchens[i].water_pressure == 1%} selected {% endif %}>Poor</option>
+                                    <option value=2 {% if kitchens[i].water_pressure == 2%} selected {% endif %}>Good</option>
+                                </select></td></tr>
+                                <tr><td>Hot Water Lag (seconds): </td><td><input type="number" name="kitchen-{{i}}-hot_water_lag" value="{{kitchens[i].hot_water_lag}}"></td></tr>
+                                
+                            </table>
+                            <a class="btn button-color mt-3 mb-1" style="float: right;" onClick="removeKitchen({{kitchens[i].id}})">Remove</a>
+                        </div>
+                    </article>
+                    {% endfor %}
+                </div>
+                <a class="btn button-color mb-3" onclick=newKitchen()>Add Kitchen</a>
+            </div>
         </div>
-    </article>
+        <!-- Livingrooms-->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h2 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseLivingrooms" class="details-section-heading">Living</a>
+                </h2>
+            </div>
+            <div id="collapseLivingrooms" class="panel-collapse collapse">
+                <div id="livingrooms">
+                    {% for i in range(0,livingroom_qty)%}
+                    <article class="card" id="livingroom-{{livingrooms[i].id}}">
+                        <div class="card-body">
+                            <h5 class="card-title">Living Room {{i+1}}</h5>
+                            <table class="details-table" width=100%>
+                                <tr><td width="200px">Size: </td><td><select name="livingroom-{{i}}-size">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if livingrooms[i].room.size == 1%} selected {% endif %}>Small</option>
+                                    <option value=2 {% if livingrooms[i].room.size == 2%} selected {% endif %}>Medium</option>
+                                    <option value=3 {% if livingrooms[i].room.size == 3%} selected {% endif %}>Large</option>
+                                </select></td></tr>
+                                <tr><td>Floor Material: </td><td><select name="livingroom-{{i}}-floor_mat">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if livingrooms[i].room.floor_mat == 1%} selected {% endif %}>Wood</option>
+                                    <option value=2 {% if livingrooms[i].room.floor_mat == 2%} selected {% endif %}>Tile</option>
+                                    <option value=3 {% if livingrooms[i].room.floor_mat == 3%} selected {% endif %}>Carpet</option>
+                                    <option value=4 {% if livingrooms[i].room.floor_mat == 4%} selected {% endif %}>Lino</option>
+                                    <option value=5 {% if livingrooms[i].room.floor_mat == 5%} selected {% endif %}>Other</option>
+                                </select></td></tr>
+                                <tr><td>Layout: </td><td><select name="livingroom-{{i}}-layout">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if livingrooms[i].room.layout == 1%} selected {% endif %}>Poor</option>
+                                    <option value=2 {% if livingrooms[i].room.layout == 2%} selected {% endif %}>Good</option>
+                                </select></td></tr>
+                                <tr><td>Power Points (Number/Location/Quality): </td><td><select name="livingroom-{{i}}-power_points">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if livingrooms[i].room.power_points == 1%} selected {% endif %}>Bad locations</option>
+                                    <option value=2 {% if livingrooms[i].room.power_points == 2%} selected {% endif %}>Old style</option>
+                                    <option value=3 {% if livingrooms[i].room.power_points == 3%} selected {% endif %}>Good location and updated</option>
+                                </select></td></tr>
+                                <tr><td>Door Close Easily? </td><td><select name="livingroom-{{i}}-door_close">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if livingrooms[i].room.door_close == 1%} selected {% endif %}>Jams or sticks</option>
+                                    <option value=2 {% if livingrooms[i].room.door_close == 2%} selected {% endif %}>Door operates correctly</option>
+                                </select></td></tr>
+                                <tr><td>Natural Lighting: </td><td><select name="livingroom-{{i}}-light_natural">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if livingrooms[i].room.light_natural == 1%} selected {% endif %}>Dark</option>
+                                    <option value=2 {% if livingrooms[i].room.light_natural == 2%} selected {% endif %}>Adequate</option>
+                                    <option value=3 {% if livingrooms[i].room.light_natural == 3%} selected {% endif %}>Bright</option>
+                                </select></td></tr>
+                                <tr><td>Artificial Lighting: </td><td><select name="livingroom-{{i}}-light_artificial">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if livingrooms[i].room.light_artificial == 1%} selected {% endif %}>Poor</option>
+                                    <option value=2 {% if livingrooms[i].room.light_artificial == 2%} selected {% endif %}>Good</option>
+                                    <option value=3 {% if livingrooms[i].room.light_artificial == 3%} selected {% endif %}>Good (LED)</option>
+                                </select></td></tr>
+                                <tr><td>Window Operation: </td><td><select name="livingroom-{{i}}-window_op">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if livingrooms[i].room.window_op == 1%} selected {% endif %}>Sticks/jams</option>
+                                    <option value=2 {% if livingrooms[i].room.window_op == 2%} selected {% endif %}>Opens and closes easily</option>
+                                </select></td></tr>
+                                <tr><td>Fly Screen: </td><td><select name="livingroom-{{i}}-fly_screens">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if livingrooms[i].room.fly_screens == 1%} selected {% endif %}>None</option>
+                                    <option value=2 {% if livingrooms[i].room.fly_screens == 2%} selected {% endif %}>Poor Quality</option>
+                                    <option value=3 {% if livingrooms[i].room.fly_screens == 3%} selected {% endif %}>Good Quality</option>
+                                </select></td></tr>
+                                <tr><td>Walls with Windows: </td><td><input type="number" name="livingroom-{{i}}-wall_windows_qty" value="{{livingrooms[i].room.wall_windows_qty}}"></td></tr>
+                                <tr><td>Window Wall 1 Direction: </td><td><select name="livingroom-{{i}}-window_dir_1">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if livingrooms[i].room.window_dir_1 == 1%} selected {% endif %}>N</option>
+                                    <option value=2 {% if livingrooms[i].room.window_dir_1 == 2%} selected {% endif %}>NNE</option>
+                                    <option value=3 {% if livingrooms[i].room.window_dir_1 == 3%} selected {% endif %}>NE</option>
+                                    <option value=4 {% if livingrooms[i].room.window_dir_1 == 4%} selected {% endif %}>NEE</option>
+                                    <option value=5 {% if livingrooms[i].room.window_dir_1 == 5%} selected {% endif %}>E</option>
+                                    <option value=6 {% if livingrooms[i].room.window_dir_1 == 6%} selected {% endif %}>SEE</option>
+                                    <option value=7 {% if livingrooms[i].room.window_dir_1 == 7%} selected {% endif %}>SE</option>
+                                    <option value=8 {% if livingrooms[i].room.window_dir_1 == 8%} selected {% endif %}>SSE</option>
+                                    <option value=9 {% if livingrooms[i].room.window_dir_1 == 9%} selected {% endif %}>S</option>
+                                    <option value=10 {% if livingrooms[i].room.window_dir_1 == 10%} selected {% endif %}>SSW</option>
+                                    <option value=11 {% if livingrooms[i].room.window_dir_1 == 11%} selected {% endif %}>SW</option>
+                                    <option value=12 {% if livingrooms[i].room.window_dir_1 == 12%} selected {% endif %}>SWW</option>
+                                    <option value=13 {% if livingrooms[i].room.window_dir_1 == 13%} selected {% endif %}>W</option>
+                                    <option value=14 {% if livingrooms[i].room.window_dir_1 == 14%} selected {% endif %}>NWW</option>
+                                    <option value=15 {% if livingrooms[i].room.window_dir_1 == 15%} selected {% endif %}>NW</option>
+                                    <option value=16 {% if livingrooms[i].room.window_dir_1 == 16%} selected {% endif %}>NNW</option>
+                                </select></td></tr>
+                                <tr><td>Window Wall 2 Direction: </td><td><select name="livingroom-{{i}}-window_dir_2">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if livingrooms[i].room.window_dir_2 == 1%} selected {% endif %}>N</option>
+                                    <option value=2 {% if livingrooms[i].room.window_dir_2 == 2%} selected {% endif %}>NNE</option>
+                                    <option value=3 {% if livingrooms[i].room.window_dir_2 == 3%} selected {% endif %}>NE</option>
+                                    <option value=4 {% if livingrooms[i].room.window_dir_2 == 4%} selected {% endif %}>NEE</option>
+                                    <option value=5 {% if livingrooms[i].room.window_dir_2 == 5%} selected {% endif %}>E</option>
+                                    <option value=6 {% if livingrooms[i].room.window_dir_2 == 6%} selected {% endif %}>SEE</option>
+                                    <option value=7 {% if livingrooms[i].room.window_dir_2 == 7%} selected {% endif %}>SE</option>
+                                    <option value=8 {% if livingrooms[i].room.window_dir_2 == 8%} selected {% endif %}>SSE</option>
+                                    <option value=9 {% if livingrooms[i].room.window_dir_2 == 9%} selected {% endif %}>S</option>
+                                    <option value=10 {% if livingrooms[i].room.window_dir_2 == 10%} selected {% endif %}>SSW</option>
+                                    <option value=11 {% if livingrooms[i].room.window_dir_2 == 11%} selected {% endif %}>SW</option>
+                                    <option value=12 {% if livingrooms[i].room.window_dir_2 == 12%} selected {% endif %}>SWW</option>
+                                    <option value=13 {% if livingrooms[i].room.window_dir_2 == 13%} selected {% endif %}>W</option>
+                                    <option value=14 {% if livingrooms[i].room.window_dir_2 == 14%} selected {% endif %}>NWW</option>
+                                    <option value=15 {% if livingrooms[i].room.window_dir_2 == 15%} selected {% endif %}>NW</option>
+                                    <option value=16 {% if livingrooms[i].room.window_dir_2 == 16%} selected {% endif %}>NNW</option>
+                                </select></td></tr>
+                                <tr><td>Window Wall 3 Direction: </td><td><select name="livingroom-{{i}}-window_dir_3">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if livingrooms[i].room.window_dir_3 == 1%} selected {% endif %}>N</option>
+                                    <option value=2 {% if livingrooms[i].room.window_dir_3 == 2%} selected {% endif %}>NNE</option>
+                                    <option value=3 {% if livingrooms[i].room.window_dir_3 == 3%} selected {% endif %}>NE</option>
+                                    <option value=4 {% if livingrooms[i].room.window_dir_3 == 4%} selected {% endif %}>NEE</option>
+                                    <option value=5 {% if livingrooms[i].room.window_dir_3 == 5%} selected {% endif %}>E</option>
+                                    <option value=6 {% if livingrooms[i].room.window_dir_3 == 6%} selected {% endif %}>SEE</option>
+                                    <option value=7 {% if livingrooms[i].room.window_dir_3 == 7%} selected {% endif %}>SE</option>
+                                    <option value=8 {% if livingrooms[i].room.window_dir_3 == 8%} selected {% endif %}>SSE</option>
+                                    <option value=9 {% if livingrooms[i].room.window_dir_3 == 9%} selected {% endif %}>S</option>
+                                    <option value=10 {% if livingrooms[i].room.window_dir_3 == 10%} selected {% endif %}>SSW</option>
+                                    <option value=11 {% if livingrooms[i].room.window_dir_3 == 11%} selected {% endif %}>SW</option>
+                                    <option value=12 {% if livingrooms[i].room.window_dir_3 == 12%} selected {% endif %}>SWW</option>
+                                    <option value=13 {% if livingrooms[i].room.window_dir_3 == 13%} selected {% endif %}>W</option>
+                                    <option value=14 {% if livingrooms[i].room.window_dir_3 == 14%} selected {% endif %}>NWW</option>
+                                    <option value=15 {% if livingrooms[i].room.window_dir_3 == 15%} selected {% endif %}>NW</option>
+                                    <option value=16 {% if livingrooms[i].room.window_dir_3 == 16%} selected {% endif %}>NNW</option>
+                                </select></td></tr>
+                                <tr><td>Sagging Ceiling? </td><td><select name="livingroom-{{i}}-ceiling_sag">
+                                    <option value='' style="color:grey;">Select Yes or No...</option>
+                                    <option value=0 {% if livingrooms[i].ceiling_sag == 0%} selected {% endif %}>No</option>
+                                    <option value=1 {% if livingrooms[i].ceiling_sag == 1%} selected {% endif %}>Yes</option>
+                                </select></td></tr>
+                                <tr><td>Signs of Moisture: </td><td><select name="livingroom-{{i}}-moisture">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if livingrooms[i].room.moisture == 1%} selected {% endif %}>None</option>
+                                    <option value=2 {% if livingrooms[i].room.moisture == 2%} selected {% endif %}>Poor Quality</option>
+                                    <option value=3 {% if livingrooms[i].room.moisture == 3%} selected {% endif %}>Good Quality</option>
+                                </select></td></tr>
+                                <tr><td>Plasterboard Defects - Fine Cracks (Map Cracking): </td><td><select name="livingroom-{{i}}-plasterboard_defects">
+                                    <option value='' style="color:grey;">Select Yes or No...</option>
+                                    <option value=0 {% if livingrooms[i].plasterboard_defects == 0%} selected {% endif %}>No</option>
+                                    <option value=1 {% if livingrooms[i].plasterboard_defects == 1%} selected {% endif %}>Yes</option>
+                                </select></td></tr>
+
+                                <tr><td>Ceiling Fan: </td><td><select name="livingroom-{{i}}-fan">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if livingrooms[i].fan == 1%} selected {% endif %}>None</option>
+                                    <option value=2 {% if livingrooms[i].fan == 2%} selected {% endif %}>Old</option>
+                                    <option value=3 {% if livingrooms[i].fan == 3%} selected {% endif %}>New</option>
+                                </select></td></tr>
+                                <tr><td>Air Conditioning: </td><td><select name="livingroom-{{i}}-ac">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if livingrooms[i].ac == 1%} selected {% endif %}>None</option>
+                                    <option value=2 {% if livingrooms[i].ac == 2%} selected {% endif %}>Old</option>
+                                    <option value=3 {% if livingrooms[i].ac == 3%} selected {% endif %}>New</option>
+                                </select></td></tr>
+                                <tr><td>Ariel Location: </td><td><select name="livingroom-{{i}}-ariel">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if livingrooms[i].ariel == 1%} selected {% endif %}>Not Practical</option>
+                                    <option value=2 {% if livingrooms[i].ariel == 2%} selected {% endif %}>Practical</option>
+                                </select></td></tr>
+                            </table>
+                            <a class="btn button-color mt-3 mb-1" style="float: right;" onClick="removeLivingroom({{livingrooms[i].id}})">Remove</a>
+                        </div>
+                    </article>
+                    {% endfor %}
+                </div>
+                <a class="btn button-color mb-3" onclick=newLivingroom()>Add Living Room</a>
+            </div>
+        </div>
+        <!-- Bathrooms-->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h2 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseBathrooms" class="details-section-heading">Bathroom</a>
+                </h2>
+            </div>
+            <div id="collapseBathrooms" class="panel-collapse collapse">
+                <div id="bathrooms">
+                    {% for i in range(0,bathroom_qty)%}
+                    <article class="card" id="bathroom-{{bathrooms[i].id}}">
+                        <div class="card-body">
+                            <h5 class="card-title">Bathroom {{i+1}}</h5>
+                            <table class="details-table" width=100%>
+                                <tr><td width="200px">Size: </td><td><select name="bathroom-{{i}}-size">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bathrooms[i].room.size == 1%} selected {% endif %}>Small</option>
+                                    <option value=2 {% if bathrooms[i].room.size == 2%} selected {% endif %}>Medium</option>
+                                    <option value=3 {% if bathrooms[i].room.size == 3%} selected {% endif %}>Large</option>
+                                </select></td></tr>
+                                <tr><td>Floor Material: </td><td><select name="bathroom-{{i}}-floor_mat">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bathrooms[i].room.floor_mat == 1%} selected {% endif %}>Wood</option>
+                                    <option value=2 {% if bathrooms[i].room.floor_mat == 2%} selected {% endif %}>Tile</option>
+                                    <option value=3 {% if bathrooms[i].room.floor_mat == 3%} selected {% endif %}>Carpet</option>
+                                    <option value=4 {% if bathrooms[i].room.floor_mat == 4%} selected {% endif %}>Lino</option>
+                                    <option value=5 {% if bathrooms[i].room.floor_mat == 5%} selected {% endif %}>Other</option>
+                                </select></td></tr>
+                                <tr><td>Layout: </td><td><select name="bathroom-{{i}}-layout">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bathrooms[i].room.layout == 1%} selected {% endif %}>Poor</option>
+                                    <option value=2 {% if bathrooms[i].room.layout == 2%} selected {% endif %}>Good</option>
+                                </select></td></tr>
+                                <tr><td>Power Points (Number/Location/Quality): </td><td><select name="bathroom-{{i}}-power_points">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bathrooms[i].room.power_points == 1%} selected {% endif %}>Bad locations</option>
+                                    <option value=2 {% if bathrooms[i].room.power_points == 2%} selected {% endif %}>Old style</option>
+                                    <option value=3 {% if bathrooms[i].room.power_points == 3%} selected {% endif %}>Good location and updated</option>
+                                </select></td></tr>
+                                <tr><td>Door Close Easily? </td><td><select name="bathroom-{{i}}-door_close">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bathrooms[i].room.door_close == 1%} selected {% endif %}>Jams or sticks</option>
+                                    <option value=2 {% if bathrooms[i].room.door_close == 2%} selected {% endif %}>Door operates correctly</option>
+                                </select></td></tr>
+                                <tr><td>Natural Lighting: </td><td><select name="bathroom-{{i}}-light_natural">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bathrooms[i].room.light_natural == 1%} selected {% endif %}>Dark</option>
+                                    <option value=2 {% if bathrooms[i].room.light_natural == 2%} selected {% endif %}>Adequate</option>
+                                    <option value=3 {% if bathrooms[i].room.light_natural == 3%} selected {% endif %}>Bright</option>
+                                </select></td></tr>
+                                <tr><td>Artificial Lighting: </td><td><select name="bathroom-{{i}}-light_artificial">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bathrooms[i].room.light_artificial == 1%} selected {% endif %}>Poor</option>
+                                    <option value=2 {% if bathrooms[i].room.light_artificial == 2%} selected {% endif %}>Good</option>
+                                    <option value=3 {% if bathrooms[i].room.light_artificial == 3%} selected {% endif %}>Good (LED)</option>
+                                </select></td></tr>
+                                <tr><td>Window Operation: </td><td><select name="bathroom-{{i}}-window_op">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bathrooms[i].room.window_op == 1%} selected {% endif %}>Sticks/jams</option>
+                                    <option value=2 {% if bathrooms[i].room.window_op == 2%} selected {% endif %}>Opens and closes easily</option>
+                                </select></td></tr>
+                                <tr><td>Fly Screen: </td><td><select name="bathroom-{{i}}-fly_screens">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bathrooms[i].room.fly_screens == 1%} selected {% endif %}>None</option>
+                                    <option value=2 {% if bathrooms[i].room.fly_screens == 2%} selected {% endif %}>Poor Quality</option>
+                                    <option value=3 {% if bathrooms[i].room.fly_screens == 3%} selected {% endif %}>Good Quality</option>
+                                </select></td></tr>
+                                <tr><td>Walls with Windows: </td><td><input type="number" name="bathroom-{{i}}-wall_windows_qty" value="{{bathrooms[i].room.wall_windows_qty}}"></td></tr>
+                                <tr><td>Window Wall 1 Direction: </td><td><select name="bathroom-{{i}}-window_dir_1">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bathrooms[i].room.window_dir_1 == 1%} selected {% endif %}>N</option>
+                                    <option value=2 {% if bathrooms[i].room.window_dir_1 == 2%} selected {% endif %}>NNE</option>
+                                    <option value=3 {% if bathrooms[i].room.window_dir_1 == 3%} selected {% endif %}>NE</option>
+                                    <option value=4 {% if bathrooms[i].room.window_dir_1 == 4%} selected {% endif %}>NEE</option>
+                                    <option value=5 {% if bathrooms[i].room.window_dir_1 == 5%} selected {% endif %}>E</option>
+                                    <option value=6 {% if bathrooms[i].room.window_dir_1 == 6%} selected {% endif %}>SEE</option>
+                                    <option value=7 {% if bathrooms[i].room.window_dir_1 == 7%} selected {% endif %}>SE</option>
+                                    <option value=8 {% if bathrooms[i].room.window_dir_1 == 8%} selected {% endif %}>SSE</option>
+                                    <option value=9 {% if bathrooms[i].room.window_dir_1 == 9%} selected {% endif %}>S</option>
+                                    <option value=10 {% if bathrooms[i].room.window_dir_1 == 10%} selected {% endif %}>SSW</option>
+                                    <option value=11 {% if bathrooms[i].room.window_dir_1 == 11%} selected {% endif %}>SW</option>
+                                    <option value=12 {% if bathrooms[i].room.window_dir_1 == 12%} selected {% endif %}>SWW</option>
+                                    <option value=13 {% if bathrooms[i].room.window_dir_1 == 13%} selected {% endif %}>W</option>
+                                    <option value=14 {% if bathrooms[i].room.window_dir_1 == 14%} selected {% endif %}>NWW</option>
+                                    <option value=15 {% if bathrooms[i].room.window_dir_1 == 15%} selected {% endif %}>NW</option>
+                                    <option value=16 {% if bathrooms[i].room.window_dir_1 == 16%} selected {% endif %}>NNW</option>
+                                </select></td></tr>
+                                <tr><td>Window Wall 2 Direction: </td><td><select name="bathroom-{{i}}-window_dir_2">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bathrooms[i].room.window_dir_2 == 1%} selected {% endif %}>N</option>
+                                    <option value=2 {% if bathrooms[i].room.window_dir_2 == 2%} selected {% endif %}>NNE</option>
+                                    <option value=3 {% if bathrooms[i].room.window_dir_2 == 3%} selected {% endif %}>NE</option>
+                                    <option value=4 {% if bathrooms[i].room.window_dir_2 == 4%} selected {% endif %}>NEE</option>
+                                    <option value=5 {% if bathrooms[i].room.window_dir_2 == 5%} selected {% endif %}>E</option>
+                                    <option value=6 {% if bathrooms[i].room.window_dir_2 == 6%} selected {% endif %}>SEE</option>
+                                    <option value=7 {% if bathrooms[i].room.window_dir_2 == 7%} selected {% endif %}>SE</option>
+                                    <option value=8 {% if bathrooms[i].room.window_dir_2 == 8%} selected {% endif %}>SSE</option>
+                                    <option value=9 {% if bathrooms[i].room.window_dir_2 == 9%} selected {% endif %}>S</option>
+                                    <option value=10 {% if bathrooms[i].room.window_dir_2 == 10%} selected {% endif %}>SSW</option>
+                                    <option value=11 {% if bathrooms[i].room.window_dir_2 == 11%} selected {% endif %}>SW</option>
+                                    <option value=12 {% if bathrooms[i].room.window_dir_2 == 12%} selected {% endif %}>SWW</option>
+                                    <option value=13 {% if bathrooms[i].room.window_dir_2 == 13%} selected {% endif %}>W</option>
+                                    <option value=14 {% if bathrooms[i].room.window_dir_2 == 14%} selected {% endif %}>NWW</option>
+                                    <option value=15 {% if bathrooms[i].room.window_dir_2 == 15%} selected {% endif %}>NW</option>
+                                    <option value=16 {% if bathrooms[i].room.window_dir_2 == 16%} selected {% endif %}>NNW</option>
+                                </select></td></tr>
+                                <tr><td>Window Wall 3 Direction: </td><td><select name="bathroom-{{i}}-window_dir_3">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bathrooms[i].room.window_dir_3 == 1%} selected {% endif %}>N</option>
+                                    <option value=2 {% if bathrooms[i].room.window_dir_3 == 2%} selected {% endif %}>NNE</option>
+                                    <option value=3 {% if bathrooms[i].room.window_dir_3 == 3%} selected {% endif %}>NE</option>
+                                    <option value=4 {% if bathrooms[i].room.window_dir_3 == 4%} selected {% endif %}>NEE</option>
+                                    <option value=5 {% if bathrooms[i].room.window_dir_3 == 5%} selected {% endif %}>E</option>
+                                    <option value=6 {% if bathrooms[i].room.window_dir_3 == 6%} selected {% endif %}>SEE</option>
+                                    <option value=7 {% if bathrooms[i].room.window_dir_3 == 7%} selected {% endif %}>SE</option>
+                                    <option value=8 {% if bathrooms[i].room.window_dir_3 == 8%} selected {% endif %}>SSE</option>
+                                    <option value=9 {% if bathrooms[i].room.window_dir_3 == 9%} selected {% endif %}>S</option>
+                                    <option value=10 {% if bathrooms[i].room.window_dir_3 == 10%} selected {% endif %}>SSW</option>
+                                    <option value=11 {% if bathrooms[i].room.window_dir_3 == 11%} selected {% endif %}>SW</option>
+                                    <option value=12 {% if bathrooms[i].room.window_dir_3 == 12%} selected {% endif %}>SWW</option>
+                                    <option value=13 {% if bathrooms[i].room.window_dir_3 == 13%} selected {% endif %}>W</option>
+                                    <option value=14 {% if bathrooms[i].room.window_dir_3 == 14%} selected {% endif %}>NWW</option>
+                                    <option value=15 {% if bathrooms[i].room.window_dir_3 == 15%} selected {% endif %}>NW</option>
+                                    <option value=16 {% if bathrooms[i].room.window_dir_3 == 16%} selected {% endif %}>NNW</option>
+                                </select></td></tr>
+                                <tr><td>Sagging Ceiling? </td><td><select name="bathroom-{{i}}-ceiling_sag">
+                                    <option value='' style="color:grey;">Select Yes or No...</option>
+                                    <option value=0 {% if bathrooms[i].room.ceiling_sag == 0%} selected {% endif %}>No</option>
+                                    <option value=1 {% if bathrooms[i].room.ceiling_sag == 1%} selected {% endif %}>Yes</option>
+                                </select></td></tr>
+                                <tr><td>Signs of Moisture: </td><td><select name="bathroom-{{i}}-moisture">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bathrooms[i].room.moisture == 1%} selected {% endif %}>None</option>
+                                    <option value=2 {% if bathrooms[i].room.moisture == 2%} selected {% endif %}>Poor Quality</option>
+                                    <option value=3 {% if bathrooms[i].room.moisture == 3%} selected {% endif %}>Good Quality</option>
+                                </select></td></tr>
+                                <tr><td>Plasterboard Defects - Fine Cracks (Map Cracking): </td><td><select name="bathroom-{{i}}-plasterboard_defects">
+                                    <option value='' style="color:grey;">Select Yes or No...</option>
+                                    <option value=0 {% if bathrooms[i].room.plasterboard_defects == 0%} selected {% endif %}>No</option>
+                                    <option value=1 {% if bathrooms[i].room.plasterboard_defects == 1%} selected {% endif %}>Yes</option>
+                                </select></td></tr>
+
+                                <tr><td>Toilet Condition: </td><td><select name="bathroom-{{i}}-toilet_cond">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bathrooms[i].toilet_cond == 1%} selected {% endif %}>None</option>
+                                    <option value=2 {% if bathrooms[i].toilet_cond == 2%} selected {% endif %}>Poor</option>
+                                    <option value=3 {% if bathrooms[i].toilet_cond == 3%} selected {% endif %}>Good</option>
+                                </select></td></tr>
+                                <tr><td>Shower Condition: </td><td><select name="bathroom-{{i}}-shower_cond">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bathrooms[i].shower_cond == 1%} selected {% endif %}>None</option>
+                                    <option value=2 {% if bathrooms[i].shower_cond == 2%} selected {% endif %}>Poor</option>
+                                    <option value=3 {% if bathrooms[i].shower_cond == 3%} selected {% endif %}>Average</option>
+                                    <option value=4 {% if bathrooms[i].shower_cond == 4%} selected {% endif %}>Good</option>
+                                </select></td></tr>
+                                <tr><td>Shower Size: </td><td><select name="bathroom-{{i}}-shower_size">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bathrooms[i].shower_size == 1%} selected {% endif %}>Small</option>
+                                    <option value=2 {% if bathrooms[i].shower_size == 2%} selected {% endif %}>Large</option>
+                                </select></td></tr>
+                                <tr><td>Shower Head: </td><td><select name="bathroom-{{i}}-shower_head">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bathrooms[i].shower_head == 1%} selected {% endif %}>Poor</option>
+                                    <option value=2 {% if bathrooms[i].shower_head == 2%} selected {% endif %}>Good</option>
+                                </select></td></tr>
+                                <tr><td>Sink Condition: </td><td><select name="bathroom-{{i}}-sink_cond">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bathrooms[i].sink_cond == 1%} selected {% endif %}>Poor</option>
+                                    <option value=2 {% if bathrooms[i].sink_cond == 2%} selected {% endif %}>Good</option>
+                                </select></td></tr>
+                                <tr><td>Water Pressure: </td><td><select name="bathroom-{{i}}-water_pressure">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bathrooms[i].water_pressure == 1%} selected {% endif %}>Poor</option>
+                                    <option value=2 {% if bathrooms[i].water_pressure == 2%} selected {% endif %}>Good</option>
+                                </select></td></tr>
+                                <tr><td>Hot Water Lag (seconds): </td><td><input type="number" name="bathroom-{{i}}-hot_water_lag" value="{{bathrooms[i].hot_water_lag}}"></td></tr>
+                                <tr><td>Extraction Fan: </td><td><select name="bathroom-{{i}}-extraction_fan">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if bathrooms[i].extraction_fan == 1%} selected {% endif %}>None</option>
+                                    <option value=2 {% if bathrooms[i].extraction_fan == 2%} selected {% endif %}>Noisy</option>
+                                    <option value=3 {% if bathrooms[i].extraction_fan == 3%} selected {% endif %}>Good</option>
+                                </select></td></tr>
+                            </table>
+                            <a class="btn button-color mt-3 mb-1" style="float: right;" onClick="removeBathroom({{bathrooms[i].id}})">Remove</a>
+                        </div>
+                    </article>
+                    {% endfor %}
+                </div>
+                <a class="btn button-color mb-3" onclick=newBathroom()>Add Bathroom</a>
+            </div>
+        </div>
+        <!-- Garages-->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h2 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseGarages" class="details-section-heading">Garage/Carport</a>
+                </h2>
+            </div>
+            <div id="collapseGarages" class="panel-collapse collapse">
+                <div id="garages">
+                    {% for i in range(0,garage_qty)%}
+                    <article class="card" id="garage-{{garages[i].id}}">
+                        <div class="card-body">
+                            <h5 class="card-title">Garage {{i+1}}</h5>
+                            <table class="details-table" width=100%>
+                                <tr><td>Garage or Carport: </td><td><select name="garage-{{i}}-garage_type">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if garages[i].garage_type == 1%} selected {% endif %}>Garage</option>
+                                    <option value=2 {% if garages[i].garage_type == 2%} selected {% endif %}>Carport</option>
+                                </select></td></tr>
+                                <tr><td>Car Spaces: </td><td><input type="number" name="garage-{{i}}-cars" value="{{garages[i].cars}}"></td></tr>
+                                <tr><td>Garage Condition: </td><td><select name="garage-{{i}}-garage_cond">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if garages[i].garage_cond == 1%} selected {% endif %}>Poor</option>
+                                    <option value=2 {% if garages[i].garage_cond == 2%} selected {% endif %}>Good</option>
+                                </select></td></tr>
+                                <tr><td>Door Type: </td><td><select name="garage-{{i}}-door">
+                                    <option value=0 style="color:grey;">Select from...</option>
+                                    <option value=1 {% if garages[i].door == 1%} selected {% endif %}>None</option>
+                                    <option value=2 {% if garages[i].door == 2%} selected {% endif %}>Manual</option>
+                                    <option value=3 {% if garages[i].door == 3%} selected {% endif %}>Auto</option>
+                                </select></td></tr>
+                            </table>
+                            <a class="btn button-color mt-3 mb-1" style="float: right;" onClick="removeGarage({{garages[i].id}})">Remove</a>
+                        </div>
+                    </article>
+                    {% endfor %}
+                </div>
+                <a class="btn button-color mb-3" onclick=newGarage()>Add Garage/Carport</a>
+            </div>
+        </div>
+    </div>
 </div>
-{% endblock %}
+
+
 </form>
+<script>
+    bedrooms = {{bedroom_qty}};
+    newBedrooms=0;
+    kitchens = {{kitchen_qty}};
+    newKitchens=0;
+    livingrooms = {{livingroom_qty}};
+    newLivingrooms=0;
+    bathrooms = {{bathroom_qty}};
+    newBathrooms=0;
+    garages = {{garage_qty}};
+    newGarages=0;
+
+    function roomGeneral(type, number){
+        html = "";
+
+        html += '<tr><td width="200px">Size: </td><td><select name="' + type + '-' + number + '-size">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >Small</option>';
+            html += '<option value=2 >Medium</option>';
+            html += '<option value=3 >Large</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Floor Material: </td><td><select name="' + type + '-' + number + '-floor_mat">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >Wood</option>';
+            html += '<option value=2 >Tile</option>';
+            html += '<option value=3 >Carpet</option>';
+            html += '<option value=4 >Lino</option>';
+            html += '<option value=5 >Other</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Layout: </td><td><select name="' + type + '-' + number + '-layout">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >Poor</option>';
+            html += '<option value=2 >Good</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Power Points (Number/Location/Quality): </td><td><select name="' + type + '-' + number + '-power_points">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >Bad locations</option>';
+            html += '<option value=2 >Old style</option>';
+            html += '<option value=3 >Good location and updated</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Door Close Easily? </td><td><select name="' + type + '-' + number + '-door_close">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >Jams or sticks</option>';
+            html += '<option value=2 >Door operates correctly</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Natural Lighting: </td><td><select name="' + type + '-' + number + '-light_natural">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >Dark</option>';
+            html += '<option value=2 >Adequate</option>';
+            html += '<option value=3 >Bright</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Artificial Lighting: </td><td><select name="' + type + '-' + number + '-light_artificial">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >Poor</option>';
+            html += '<option value=2 >Good</option>';
+            html += '<option value=3 >Good (LED)</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Window Operation: </td><td><select name="' + type + '-' + number + '-window_op">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >Sticks/jams</option>';
+            html += '<option value=2 >Opens and closes easily</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Fly Screen: </td><td><select name="' + type + '-' + number + '-fly_screens">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >None</option>';
+            html += '<option value=2 >Poor Quality</option>';
+            html += '<option value=3 >Good Quality</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Walls with Windows: </td><td><input type="number" name="' + type + '-' + number + '-wall_windows_qty" value=""></td></tr>';
+        html += '<tr><td>Window Wall 1 Direction: </td><td><select name="' + type + '-' + number + '-window_dir_1">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >N</option>';
+            html += '<option value=2 >NNE</option>';
+            html += '<option value=3 >NE</option>';
+            html += '<option value=4 >NEE</option>';
+            html += '<option value=5 >E</option>';
+            html += '<option value=6 >SEE</option>';
+            html += '<option value=7 >SE</option>';
+            html += '<option value=8 >SSE</option>';
+            html += '<option value=9 >S</option>';
+            html += '<option value=10 >SSW</option>';
+            html += '<option value=11 >SW</option>';
+            html += '<option value=12 >SWW</option>';
+            html += '<option value=13 >W</option>';
+            html += '<option value=14 >NWW</option>';
+            html += '<option value=15 >NW</option>';
+            html += '<option value=16 >NNW</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Window Wall 2 Direction: </td><td><select name="' + type + '-' + number + '-window_dir_2">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >N</option>';
+            html += '<option value=2 >NNE</option>';
+            html += '<option value=3 >NE</option>';
+            html += '<option value=4 >NEE</option>';
+            html += '<option value=5 >E</option>';
+            html += '<option value=6 >SEE</option>';
+            html += '<option value=7 >SE</option>';
+            html += '<option value=8 >SSE</option>';
+            html += '<option value=9 >S</option>';
+            html += '<option value=10 >SSW</option>';
+            html += '<option value=11 >SW</option>';
+            html += '<option value=12 >SWW</option>';
+            html += '<option value=13 >W</option>';
+            html += '<option value=14 >NWW</option>';
+            html += '<option value=15 >NW</option>';
+            html += '<option value=16 >NNW</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Window Wall 3 Direction: </td><td><select name="' + type + '-' + number + '-window_dir_3">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >N</option>';
+            html += '<option value=2 >NNE</option>';
+            html += '<option value=3 >NE</option>';
+            html += '<option value=4 >NEE</option>';
+            html += '<option value=5 >E</option>';
+            html += '<option value=6 >SEE</option>';
+            html += '<option value=7 >SE</option>';
+            html += '<option value=8 >SSE</option>';
+            html += '<option value=9 >S</option>';
+            html += '<option value=10 >SSW</option>';
+            html += '<option value=11 >SW</option>';
+            html += '<option value=12 >SWW</option>';
+            html += '<option value=13 >W</option>';
+            html += '<option value=14 >NWW</option>';
+            html += '<option value=15 >NW</option>';
+            html += '<option value=16 >NNW</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Sagging Ceiling? </td><td><select name="' + type + '-' + number + '-ceiling_sag">';
+            html += '<option value="" style="color:grey;">Select Yes or No...</option>';
+            html += '<option value=0 >No</option>';
+            html += '<option value=1 >Yes</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Signs of Moisture: </td><td><select name="' + type + '-' + number + '-moisture">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >None</option>';
+            html += '<option value=2 >Poor Quality</option>';
+            html += '<option value=3 >Good Quality</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Plasterboard Defects - Fine Cracks (Map Cracking): </td><td><select name="' + type + '-' + number + '-plasterboard_defects">';
+            html += '<option value="" style="color:grey;">Select Yes or No...</option>';
+            html += '<option value=0 >No</option>';
+            html += '<option value=1 >Yes</option>';
+        html += '</select></td></tr>';
+
+        return html;
+    } 
+    function newBedroom(){
+        newBedrooms = newBedrooms + 1;
+        bedrooms = bedrooms + 1;
+
+        document.getElementById("newBedrooms").value = newBedrooms;
+
+        parentDiv = document.getElementById("bedrooms")
+
+        newDiv = document.createElement('article');
+        newDiv.class= 'card';
+        newDiv.id = 'bedroom-new-' + newBedrooms;
+
+        html = "";
+
+        html += '<div class="card-body">';
+        if (bedrooms == 1){
+            html += '<h5 class="card-title">Master Bedroom</h5>';
+        } else {
+            html += '<h5 class="card-title">Bedroom ' + bedrooms + '</h5>';
+        }
+        html += '<table class="details-table" width=100%>';
+
+        html += roomGeneral('bedroom', bedrooms)
+
+        html += '<tr><td>Ceiling Fan: </td><td><select name="bedroom-' + bedrooms + '-fan">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >None</option>';
+            html += '<option value=2 >Old</option>';
+            html += '<option value=3 >New</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Air Conditioning: </td><td><select name="bedroom-' + bedrooms + '-ac">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >None</option>';
+            html += '<option value=2 >Old</option>';
+            html += '<option value=3 >New</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Blinds: </td><td><select name="bedroom-' + bedrooms + '-blinds">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >None</option>';
+            html += '<option value=2 >Non-Blackout</option>';
+            html += '<option value=3 >Blackout (Poor Condition)</option>';
+            html += '<option value=4 >Blackout (Good Condition)</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Wardrobe: </td><td><select name="bedroom-' + bedrooms + '-wardrobe">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >None</option>';
+            html += '<option value=2 >Small</option>';
+            html += '<option value=3 >Large</option>';
+            html += '<option value=4 >Walk-in</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Walk-in Wardrobe: </td><td><select name="bedroom-' + bedrooms + '-walk_in">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >None</option>';
+            html += '<option value=2 >None but space to build one</option>';
+            html += '<option value=3 >Small</option>';
+            html += '<option value=4 >Large</option>';
+        html += '</select></td></tr>';
+
+        html += '</table>';
+        html += '<a class="btn button-color mt-3 mb-1" style="float: right;" onClick="removeBedroom("' + "'new" + newBedrooms +"'" + '")">Remove</a>';
+        html += '</div>'
+        
+        newDiv.innerHTML = html;
+        parentDiv.appendChild(newDiv);
+    }
+    function newKitchen(){
+        newKitchens = newKitchens + 1;
+        kitchens = kitchens + 1;
+
+        document.getElementById("newKitchens").value = newKitchens;
+
+        parentDiv = document.getElementById("kitchens")
+
+        newDiv = document.createElement('article');
+        newDiv.class= 'card';
+        newDiv.id = 'kitchen-new-' + newKitchens;
+
+        html = "";
+
+        html += '<div class="card-body">';
+        html += '<h5 class="card-title">Kitchen ' + kitchens + '</h5>';
+        html += '<table class="details-table" width=100%>';
+
+        html += roomGeneral('kitchen', kitchens)
+
+        html += '<tr><td>Ceiling Fan: </td><td><select name="kitchen-' + kitchens + '-fan">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >None</option>';
+            html += '<option value=2 >Old</option>';
+            html += '<option value=3 >New</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Air Conditioning: </td><td><select name="kitchen-' + kitchens + '-ac">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >None</option>';
+            html += '<option value=2 >Old</option>';
+            html += '<option value=3 >New</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Overall Quality: </td><td><select name="kitchen-' + kitchens + '-quality">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >Needs immediate update</option>';
+            html += '<option value=2 >Dated</option>';
+            html += '<option value=3 >Modern</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Bench Material: </td><td><select name="kitchen-' + kitchens + '-bench_mat">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >Lino</option>';
+            html += '<option value=2 >Wood</option>';
+            html += '<option value=3 >Stone/Granite</option>';
+            html += '<option value=4 >Concrete</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Bench Space: </td><td><select name="kitchen-' + kitchens + '-bench_space">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >Small</option>';
+            html += '<option value=2 >Adequate</option>';
+            html += '<option value=3 >Plentiful</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Cupboard Space: </td><td><select name="kitchen-' + kitchens + '-cupboard_space">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >Lacking</option>';
+            html += '<option value=2 >Adequate</option>';
+            html += '<option value=3 >Plentiful</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Pantry Space: </td><td><select name="kitchen-' + kitchens + '-pantry_space">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >None</option>';
+            html += '<option value=2 >Small</option>';
+            html += '<option value=3 >Large</option>';
+            html += '<option value=4 >Walk-in</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Oven Size: </td><td><select name="kitchen-' + kitchens + '-oven_size">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >Small</option>';
+            html += '<option value=2 >Large</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Cooktop: </td><td><select name="kitchen-' + kitchens + '-cooktop">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >Old Electric</option>';
+            html += '<option value=2 >New Electric</option>';
+            html += '<option value=3 >Induction</option>';
+            html += '<option value=4 >Gas</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Sink: </td><td><select name="kitchen-' + kitchens + '-sink">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >Small</option>';
+            html += '<option value=2 >Large</option>';
+            html += '<option value=3 >Farmhouse</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Water Pressure: </td><td><select name="kitchen-' + kitchens + '-water_pressure">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >Poor</option>';
+            html += '<option value=2 >Good</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Hot Water Lag (seconds): </td><td><input type="number" name="kitchen-' + kitchens + '-hot_water_lag" value=""></td></tr>';
+
+        html += '</table>';
+        html += '<a class="btn button-color mt-3 mb-1" style="float: right;" onClick="removeKitchen("' + "'new" + newKitchens +"'" + '")">Remove</a>';
+        html += '</div>'
+        
+        newDiv.innerHTML = html;
+        parentDiv.appendChild(newDiv);
+    }
+    function newLivingroom(){
+        newLivingrooms = newLivingrooms + 1;
+        livingrooms = livingrooms + 1;
+
+        document.getElementById("newLivingrooms").value = newLivingrooms;
+
+        parentDiv = document.getElementById("livingrooms")
+
+        newDiv = document.createElement('article');
+        newDiv.class= 'card';
+        newDiv.id = 'livingroom-new-' + newLivingrooms;
+
+        html = "";
+
+        html += '<div class="card-body">';
+        html += '<h5 class="card-title">Living Room ' + livingrooms + '</h5>';
+        html += '<table class="details-table" width=100%>';
+
+        html += roomGeneral('livingroom', livingrooms)
+
+        html += '<tr><td>Ceiling Fan: </td><td><select name="livingroom-' + livingrooms + '-fan">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >None</option>';
+            html += '<option value=2 >Old</option>';
+            html += '<option value=3 >New</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Air Conditioning: </td><td><select name="livingroom-' + livingrooms + '-ac">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >None</option>';
+            html += '<option value=2 >Old</option>';
+            html += '<option value=3 >New</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Ariel Location: </td><td><select name="livingroom-' + livingrooms + '-ariel">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >Not Practical</option>';
+            html += '<option value=2 >Practical</option>';
+        html += '</select></td></tr>';
+            
+        html += '</table>';
+        html += '<a class="btn button-color mt-3 mb-1" style="float: right;" onClick="removeLivingroom("' + "'new" + newLivingrooms +"'" + '")">Remove</a>';
+        html += '</div>'
+        
+        newDiv.innerHTML = html;
+        parentDiv.appendChild(newDiv);
+    }
+    function newBathroom(){
+        newBathrooms = newBathrooms + 1;
+        bathrooms = bathrooms + 1;
+
+        document.getElementById("newBathrooms").value = newBathrooms;
+
+        parentDiv = document.getElementById("bathrooms")
+
+        newDiv = document.createElement('article');
+        newDiv.class= 'card';
+        newDiv.id = 'bathroom-new-' + newBathrooms;
+
+        html = "";
+
+        html += '<div class="card-body">';
+        html += '<h5 class="card-title">Bathroom ' + bathrooms + '</h5>';
+        html += '<table class="details-table" width=100%>';
+
+        html += roomGeneral('bathroom', bathrooms)
+
+        html += '<tr><td>Toilet Condition: </td><td><select name="bathroom-' + bathrooms + '-toilet_cond">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >None</option>';
+            html += '<option value=2 >Poor</option>';
+            html += '<option value=3 >Good</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Shower Condition: </td><td><select name="bathroom-' + bathrooms + '-shower_cond">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >None</option>';
+            html += '<option value=2 >Poor</option>';
+            html += '<option value=3 >Average</option>';
+            html += '<option value=4 >Good</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Shower Size: </td><td><select name="bathroom-' + bathrooms + '-shower_size">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >Small</option>';
+            html += '<option value=2 >Large</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Shower Head: </td><td><select name="bathroom-' + bathrooms + '-shower_head">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >Poor</option>';
+            html += '<option value=2 >Good</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Sink Condition: </td><td><select name="bathroom-' + bathrooms + '-sink_cond">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >Poor</option>';
+            html += '<option value=2 >Good</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Water Pressure: </td><td><select name="bathroom-' + bathrooms + '-water_pressure">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >Poor</option>';
+            html += '<option value=2 >Good</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Hot Water Lag (seconds): </td><td><input type="number" name="bathroom-' + bathrooms + '-hot_water_lag" value=""></td></tr>';
+        html += '<tr><td>Extraction Fan: </td><td><select name="bathroom-' + bathrooms + '-extraction_fan">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >None</option>';
+            html += '<option value=2 >Noisy</option>';
+            html += '<option value=3 >Good</option>';
+        html += '</select></td></tr>';
+
+        html += '</table>';
+        html += '<a class="btn button-color mt-3 mb-1" style="float: right;" onClick="removeBathroom("' + "'new" + newBathrooms +"'" + '")">Remove</a>';
+        html += '</div>'
+        
+        newDiv.innerHTML = html;
+        parentDiv.appendChild(newDiv);
+    }
+    function newGarage(){
+        newGarages = newGarages + 1;
+        garages = garages + 1;
+
+        document.getElementById("newGarages").value = newGarages;
+
+        parentDiv = document.getElementById("garages")
+
+        newDiv = document.createElement('article');
+        newDiv.class= 'card';
+        newDiv.id = 'garage-new-' + newGarages;
+
+        html = '';
+
+        html += '<div class="card-body">';
+        html += '<h5 class="card-title">Garage ' + garages + '</h5>';
+        html += '<table class="details-table" width=100%>';
+
+        html += '<tr><td>Garage or Carport: </td><td><select name="garage-' + garages + '-garage_type">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >Garage</option>';
+            html += '<option value=2 >Carport</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Car Spaces: </td><td><input type="number" name="garage-' + garages + '-cars" value=""></td></tr>';
+        html += '<tr><td>Garage Condition: </td><td><select name="garage-' + garages + '-garage_cond">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >Poor</option>';
+            html += '<option value=2 >Good</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>Door Type: </td><td><select name="garage-' + garages + '-door">';
+            html += '<option value=0 style="color:grey;">Select from...</option>';
+            html += '<option value=1 >None</option>';
+            html += '<option value=2 >Manual</option>';
+            html += '<option value=3 >Auto</option>';
+        html += '</select></td></tr>';           
+
+        html += '</table>';
+        html += '<a class="btn button-color mt-3 mb-1" style="float: right;" onClick="removeGarage("' + "'new" + newGarages +"'" + '")">Remove</a>';
+        html += '</div>'
+        
+        newDiv.innerHTML = html;
+        parentDiv.appendChild(newDiv);
+    }
+
+    function removeBedroom(id){
+        //Hide the Div
+        myDiv = document.getElementById("bedroom-" + id);
+        myDiv.style.display = "none";
+
+        //Update the hidden remove value
+        myInput = document.getElementById("removeBedrooms");
+        if (myInput.value == ''){
+            myInput.value = id.toString();
+        } else {
+            myInput.value += "," + id.toString();
+        }
+    }
+    function removeKitchen(id){
+        //Hide the Div
+        myDiv = document.getElementById("kitchen-" + id);
+        myDiv.style.display = "none";
+
+        //Update the hidden remove value
+        myInput = document.getElementById("removeKitchens");
+        if (myInput.value == ''){
+            myInput.value = id.toString();
+        } else {
+            myInput.value += "," + id.toString();
+        }
+    }
+    function removeLivingroom(id){
+        //Hide the Div
+        myDiv = document.getElementById("livingroom-" + id);
+        myDiv.style.display = "none";
+
+        //Update the hidden remove value
+        myInput = document.getElementById("removeLivingrooms");
+        if (myInput.value == ''){
+            myInput.value = id.toString();
+        } else {
+            myInput.value += "," + id.toString();
+        }
+    }
+    function removeBathroom(id){
+        //Hide the Div
+        myDiv = document.getElementById("bathroom-" + id);
+        myDiv.style.display = "none";
+
+        //Update the hidden remove value
+        myInput = document.getElementById("removeBathrooms");
+        if (myInput.value == ''){
+            myInput.value = id.toString();
+        } else {
+            myInput.value += "," + id.toString();
+        }
+    }
+    function removeGarage(id){
+        //Hide the Div
+        myDiv = document.getElementById("garage-" + id);
+        myDiv.style.display = "none";
+
+        //Update the hidden remove value
+        myInput = document.getElementById("removeGarages");
+        if (myInput.value == ''){
+            myInput.value = id.toString();
+        } else {
+            myInput.value += "," + id.toString();
+        }
+    }
+</script>
+{% endblock %}

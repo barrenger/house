@@ -5,6 +5,7 @@ class House(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     address = db.Column(db.String(500), unique=True)
     suburb = db.Column(db.String(64),nullable=False)
+    link = db.Column(db.String(255),nullable=True)
     # Final Sale Price
     price_ask = db.Column(db.Float, nullable=True)
     # Final Sale Price
@@ -164,7 +165,7 @@ class Kitchen(db.Model):
     # Bench Material: 1 = lino, 2 = wood, 3 = stone/granite, 4 = concrete.
     bench_mat = db.Column(db.Integer, nullable=True) 
     # Bench Space: 1 = small, 2 = adequate, 3 = plentiful.
-    bench_mat = db.Column(db.Integer, nullable=True) 
+    bench_space = db.Column(db.Integer, nullable=True) 
     # Cupboard Space: 1 = lacking, 2 = adequate, 3 = plentiful.
     cupboard_space = db.Column(db.Integer, nullable=True) 
     # Pantry Space: 1 = none, 2 = small, 3 = large, 4 = walk-in.
@@ -196,10 +197,6 @@ class Living(db.Model):
     fan = db.Column(db.Integer, nullable=True) 
     # Air Conditioning: 1 = none, 2 = old, 3 = new.
     ac = db.Column(db.Integer, nullable=True) 
-    # Layout: 1 = not practical, 2 = practical.
-    layout = db.Column(db.Integer, nullable=True) 
-    # Size: 1 = small, 2 = average, 3 = large.
-    size = db.Column(db.Integer, nullable=True) 
     # Ariel Location: 1 = not practical, 2 = practical.
     ariel = db.Column(db.Integer, nullable=True) 
 
@@ -224,7 +221,7 @@ class Bath(db.Model):
     # Shower Head: 1 = poor, 2 = good.
     shower_head = db.Column(db.Integer, nullable=True) 
     # Sink Condition: 1 = poor, 2 = good.
-    sing_cond = db.Column(db.Integer, nullable=True) 
+    sink_cond = db.Column(db.Integer, nullable=True) 
     # Water Pressure: 1 = poor, 2 = good.
     water_pressure = db.Column(db.Integer, nullable=True) 
     # Hot Water Lag: seconds.

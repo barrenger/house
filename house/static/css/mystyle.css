@@ -17,10 +17,14 @@ a {
     color: black;
     text-decoration: none;
 }
+a:hover{
+    color: black;
+    text-decoration:none;
+}
 
 /* change the navbar color */
 .navbar{
-    background-color: #005bc4;
+    background-color: #2087fc;
 }
 
 /* Inserting this collapsed row between two flex items will make 
@@ -42,7 +46,7 @@ a {
 
 /* Button styling*/
 .button-color{
-    background-color: #ff9900;
+    background-color: #ff9532;
     color:white;
     border:none;
 }
@@ -53,5 +57,19 @@ a {
 }
 /* Set the color of the borders */
 .border-color{
-    border-color: #ff9900 !important;
+    border-color: #ff9532 !important;
+}
+
+/* Details Page */
+.details-table td{
+    padding-top: 4px;
+    padding-bottom: 4px;
+    border-top: lightgrey solid 1px;
+    border-bottom: lightgrey solid 1px;
+}
+.details-section-heading{
+    background-color: lightgray;
+    width: 100%;
+    display:block;
+    padding: 8px 24px 8px 24px;
 }

@@ -3,6 +3,7 @@
 {% block head %}
 <!-- Create a new Entry -->
 <form class="mt-1 mb-1 ml-3 mr-3" action="{{ url_for('main.details', houseId=0) }}">
+    <input type="hidden" id="new" name="new" value="true">
     <table width=100%>
         <tr>
             <td colspan=3></td><h3>New Entry</h3></td>
@@ -27,7 +28,16 @@
     <a href="{{ url_for('main.details', houseId=house.id) }}">
         <article class="card">
             <div class="card-body">
-                {{house.address}}, {{house.suburb}}
+                <table width="100%">
+                    <tr>
+                        <td>{{house.address}}, {{house.suburb}}</td>
+                        <td style="text-align: right; white-space: nowrap;">
+                            <p>{{house.bedrooms}} <i class="fa fa-bed pr-2"></i>
+                            {{house.bathrooms}} <i class="fa fa-bath pr-2"></i>
+                            {{house.garages}} <i class="fa fa-car pr-2"></i></p>
+                        </td>
+                    </tr>
+                </table>
             </div>
         </article>
     </a>
